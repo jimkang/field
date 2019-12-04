@@ -168,6 +168,19 @@ button {
   width: 5em;
 }
 
+.editing {
+  border: 8px dashed #444;
+}
+
+.edit-field-tip {
+  display: none;
+  font-style: italic;
+}
+
+.editing + .edit-field-tip {
+  display: block;
+}
+
 footer {
   margin-top: 1em;
 }

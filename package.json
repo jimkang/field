@@ -1,0 +1,66 @@
+{
+  "name": "workings",
+  "version": "1.0.0",
+  "description": "Slopcube",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jimkang/workings.git"
+  },
+  "keywords": [
+    "cubes"
+  ],
+  "author": "Jim Kang",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/jimkang/workings/issues"
+  },
+  "homepage": "https://github.com/jimkang/workings",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.7.0",
+    "@typescript-eslint/parser": "^2.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "^7.3.0",
+    "browserify": "^14.5.0",
+    "eslint": "^6.7.2",
+    "uglify-es": "^3.3.9"
+  },
+  "dependencies": {
+    "@jimkang/randomid": "^1.0.0",
+    "@types/node": "^12.12.7",
+    "accessor": "^3.0.0",
+    "basic-2d-math": "^1.0.1",
+    "d3-array": "^2.0.3",
+    "d3-color": "^1.4.0",
+    "d3-ease": "^1.0.5",
+    "d3-hierarchy": "^1.1.8",
+    "d3-interpolate": "^1.3.2",
+    "d3-scale-chromatic": "^1.5.0",
+    "d3-selection": "^1.3.2",
+    "d3-transition": "^1.2.0",
+    "errorback-promise": "^1.0.0",
+    "handle-error-web": "^1.0.1",
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.curry": "^4.1.1",
+    "lodash.findwhere": "^3.1.0",
+    "lodash.flatten": "^4.4.0",
+    "lodash.omit": "^4.5.0",
+    "lodash.pick": "^4.4.0",
+    "lodash.uniq": "^4.5.0",
+    "object-path-exists": "^1.0.0",
+    "one-listener-per-element": "^1.0.0",
+    "probable": "^2.1.4",
+    "render-as-nested-list": "^1.0.1",
+    "route-state": "^2.0.5",
+    "seedrandom": "^3.0.1",
+    "standard-bail": "^2.0.1",
+    "strokerouter": "^2.0.0",
+    "tablenest": "^4.0.0",
+    "tsify": "^4.0.1",
+    "typescript": "^3.7.2"
+  }
+}
