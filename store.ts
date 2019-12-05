@@ -8,6 +8,9 @@ var projectDict: Record<string, Project> = {};
 if (window.localStorage.projects) {
   try {
     projectDict = JSON.parse(localStorage.projects);
+    for (var id in projectDict) {
+      inflateDates(projectDict[id]);
+    }
   } catch (e) {
     console.log(e, e.stack);
   }
@@ -29,6 +32,20 @@ function getProjects(): Array<Project> {
 function clearProjects() {
   projectDict = {};
   saveProjects();
+}
+
+function inflateDates(project: Project) {
+  project.lastUpdated = inflateDateValue(project.lastUpdated);
+  project.created = inflateDateValue(project.created);
+}
+
+function inflateDateValue(value: string | Date): Date {
+  if (value instanceof Date) {
+    return value;
+  }
+  if (typeof value === 'string') {
+    return new Date(value);
+  }
 }
 
 module.exports = {

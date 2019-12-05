@@ -27,18 +27,27 @@ function followRoute({ hideUI, debug, selProj }) {
   d3.select(document.body).classed('hide-ui', hideUI);
   d3.select(document.body).classed('debug', debug);
 
-  var projects = getProjects();
-  if (!selProj) {
-    // TODO: Pick latest?
-    routeState.addToRoute({ selProj: projects[0].id });
-    return;
-  }
+  refreshProjects();
 
-  projectsFlow({ projectData: projects, selectedProjectId: selProj });
+  function refreshProjects() {
+    var projects = getProjects();
+    if (!selProj) {
+      // TODO: Pick latest?
+      routeState.addToRoute({ selProj: projects[0].id });
+      return;
+    }
+
+    projectsFlow({
+      projectData: projects,
+      selectedProjectId: selProj,
+      onSelectProject,
+      onInvalidateProjects: refreshProjects
+    });
+  }
 
   function onAddProjectClick() {
     var now = new Date();
-    updateProject({
+    var newProject = {
       id: `project-${randomId(4)}`,
       name: 'Cool Project',
       numberProps: {},
@@ -46,7 +55,13 @@ function followRoute({ hideUI, debug, selProj }) {
       created: now,
       lastUpdated: now,
       relationships: {}
-    });
+    };
+    updateProject(newProject);
+    onSelectProject({ projectId: newProject.id });
+  }
+
+  function onSelectProject({ projectId }) {
+    routeState.addToRoute({ selProj: projectId });
   }
 }
 

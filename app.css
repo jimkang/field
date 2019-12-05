@@ -185,6 +185,29 @@ footer {
   margin-top: 1em;
 }
 
+#board {
+  /* Total board width is 100. */
+  font-size: 1.5; 
+}
+
+#board .project {
+  cursor: pointer;
+}
+
+#board .project circle {
+  fill: #fff;
+  stroke: #444;
+  stroke-width: 0.1;
+}
+
+#board .project.selected circle {
+  stroke-width: 0.2;
+}
+
+#board .project text {
+  text-anchor: middle;
+}
+
 .centered-col {
   display: flex;
   flex-direction: column;
@@ -198,7 +221,6 @@ footer {
 .debug #debug-layer {
   display: initial;
 }
-
 
 .overlays-container: {
   position: relative;
