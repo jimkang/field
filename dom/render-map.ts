@@ -21,6 +21,7 @@ export function renderMap({
     .enter()
     .append('g')
     .classed('project', true)
+    .classed('chit', true)
     .on('click', onClickProject);
 
   newProjects

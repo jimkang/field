@@ -125,9 +125,9 @@ button {
 
 .controls {
   display: flex;
-  /*! flex-direction: column; */
+  flex-wrap: wrap;
   align-items: center;
-  /*! margin-top: 2em; */
+  justify-content: center;
   border: 4px dashed #666;
   border-radius: 0.2em;
   padding-top: 1em;
@@ -138,33 +138,33 @@ button {
   margin-bottom: 1em;
 }
 
-.project-editor {
+.props-editor {
   border: 4px dashed #666;
   border-radius: 0.2em;
 }
 
-.project-editor ul {
+.props-editor ul {
   list-style-type: none;
   padding-left: 0;
 }
 
-.project-editor li {
+.props-editor li {
   display: flex;
   justify-content: end;
 }
 
-.project-editor li .prop-label {
+.props-editor li .prop-label {
   max-width: 4em;
 }
 
-.project-editor li .prop-slider {
+.props-editor li .prop-slider {
   flex-grow: 1;
   /*! max-width: 12em; */
   margin-left: 1em;
   margin-right: 1em;
 }
 
-.project-editor li .prop-val {
+.props-editor li .prop-val {
   width: 5em;
 }
 
@@ -190,21 +190,21 @@ footer {
   font-size: 1.5; 
 }
 
-#board .project {
+#board .chit {
   cursor: pointer;
 }
 
-#board .project circle {
+#board .chit circle {
   fill: #fff;
   stroke: #444;
   stroke-width: 0.1;
 }
 
-#board .project.selected circle {
+#board .chit.selected circle {
   stroke-width: 0.2;
 }
 
-#board .project text {
+#board .chit text {
   text-anchor: middle;
 }
 

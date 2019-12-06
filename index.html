@@ -19,18 +19,87 @@
       <section id="ui-overlay" class="ui">
         <section class="controls ui">
           <button id="add-project-button">Add a project</button>
+          <button id="add-attractor-button">Add an attractor</button>
           <button id="export-button">Export</button>
           <button id="import-button">Import</button>
           <button id="clear-button">Clear all projects</button>
         </section>
 
-        <section class="project-editor ui">
-          <h2 class="project-name" contenteditable>Slop Cube</h2>
+        <section class="project-editor prop-editor ui">
+          <h2 class="project-name sheet-name" contenteditable>Slop Cube</h2>
           <div class="edit-field-tip">
             Hit Ctrl+Enter (or click outside of field) to complete editing. Hit
             Esc to cancel edit.
           </div>
-          <ul class="project-props">
+          <ul class="project-props props">
+            <li>
+              <label class="prop-label">Done</label>
+              <input
+                class="prop-slider"
+                type="range"
+                min="0.0"
+                max="1.0"
+                step="0.05"
+                value="0.5"
+              />
+              <input
+                class="prop-val"
+                type="number"
+                value="0.5"
+                min="0.0"
+                max="1.0"
+              />
+            </li>
+            <li>
+              <label class="prop-label">Art</label>
+              <input
+                class="prop-slider"
+                type="range"
+                min="0.0"
+                max="1.0"
+                step="0.05"
+                value="0.8"
+              />
+              <input
+                class="prop-val"
+                type="number"
+                value="0.8"
+                min="0.0"
+                max="1.0"
+              />
+            </li>
+            <li>
+              <label class="prop-label">Game</label>
+              <input
+                class="prop-slider"
+                type="range"
+                min="0.0"
+                max="1.0"
+                step="0.05"
+                value="0.2"
+              />
+              <input
+                class="prop-val"
+                type="number"
+                step="0.05"
+                value="0.2"
+                min="0.0"
+                max="1.0"
+              />
+            </li>
+            <li><button>Delete attractor</button></li>
+          </ul>
+        </section>
+
+        <section class="attractor-editor prop-editor ui">
+          <h2 class="attractor-name props-name" contenteditable>
+            Attractor name
+          </h2>
+          <div class="edit-field-tip">
+            Hit Ctrl+Enter (or click outside of field) to complete editing. Hit
+            Esc to cancel edit.
+          </div>
+          <ul class="attractor-props props">
             <li>
               <label class="prop-label">Done</label>
               <input

@@ -9,3 +9,13 @@ export interface Project {
   // Value: List of project ids.
   relationships: Record<string, Array<string>>;
 }
+
+export interface Attractor {
+  id: string;
+  name: string;
+  numberProps: Record<string, number>;
+  strProps: Record<string, string>;
+  created?: Date;
+  lastUpdated?: Date;
+}
+
