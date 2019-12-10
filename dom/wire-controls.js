@@ -1,17 +1,16 @@
 var OLPE = require('one-listener-per-element');
-var { setListener } = OLPE();
+var { on } = OLPE();
 
-function wireControls({ onAddProjectClick, onClearClick }) {
-  setListener({
-    eventName: 'click',
-    listener: onAddProjectClick,
-    element: document.getElementById('add-project-button')
-  });
-  setListener({
-    eventName: 'click',
-    listener: onClearClick,
-    element: document.getElementById('clear-button')
-  });
+function wireControls({
+  onAddProjectClick,
+  onClearProjectsClick,
+  onAddAttractorClick,
+  onClearAttractorsClick
+}) {
+  on('#add-project-button', 'click', onAddProjectClick);
+  on('#clear-projects-button', 'click', onClearProjectsClick);
+  on('#add-attractor-button', 'click', onAddAttractorClick);
+  on('#clear-attractors-button', 'click', onClearAttractorsClick);
 }
 
 module.exports = wireControls;

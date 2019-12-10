@@ -1,28 +1,34 @@
-import { Project } from '../types';
+import { Thing, ThingType } from '../types';
 var cloneDeep = require('lodash.clonedeep');
 var StrokeRouter = require('strokerouter');
 var d3 = require('d3-selection');
 
 var strokeRouter = StrokeRouter(document);
-var nameField = d3.select('.project-editor .project-name');
 
 export function renderEditor({
-  project,
-  onChangeProject
+  thing,
+  thingType,
+  onChange
 }: {
-  project: Project;
-  onChangeProject: (Project) => void;
+  thing: Thing;
+  thingType: ThingType;
+  onChange: (Thing) => void;
 }) {
-  renderNameField(project, updateName);
+  renderNameField(thing, thingType, onNameChanged);
 
-  function updateName(newText) {
-    var copy = cloneDeep(project);
+  function onNameChanged(newText) {
+    var copy = cloneDeep(thing);
     copy.name = newText;
-    onChangeProject(copy);
+    onChange(copy);
   }
 }
 
-function renderNameField(project: Project, updateName) {
+function renderNameField(
+  thing: Thing,
+  thingType: ThingType,
+  onNameChanged: (string) => void
+) {
+  var nameField = d3.select(`.${thingType}-editor .name`);
   var editing = false;
   var initialValue = '';
 
@@ -34,7 +40,10 @@ function renderNameField(project: Project, updateName) {
   strokeRouter.unrouteKeyUp('enter', ['meta']);
 
   // Update field value.
-  nameField.text(project.name);
+  nameField.text(thing ? thing.name : '');
+  if (!thing) {
+    return;
+  }
 
   // Connect current listeners.
   nameField.on('blur.name', endEditing);
@@ -53,7 +62,7 @@ function renderNameField(project: Project, updateName) {
   function endEditing() {
     if (editing) {
       nameField.classed('editing', false);
-      updateName(nameField.text());
+      onNameChanged(nameField.text());
       editing = false;
     }
   }

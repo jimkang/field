@@ -1,37 +1,54 @@
-import { Project } from './types';
+import { Project, Attractor, ThingType, Thing } from './types';
 
 // Singleton.
 
 // Load from localStorage when the module is loaded.
-var projectDict: Record<string, Project> = {};
+var dictsForTypes: Record<string, Record<string, Thing>> = {
+  project: {},
+  attractor: {}
+};
 
 if (window.localStorage.projects) {
   try {
-    projectDict = JSON.parse(localStorage.projects);
+    var projectDict: Record<string, Project> = JSON.parse(
+      localStorage.projects
+    );
     for (var id in projectDict) {
       inflateDates(projectDict[id]);
     }
+    dictsForTypes['project'] = projectDict;
   } catch (e) {
     console.log(e, e.stack);
   }
 }
 
-function updateProject(project: Project) {
-  projectDict[project.id] = project;
-  saveProjects();
+if (window.localStorage.attractors) {
+  try {
+    var attractorDict: Record<string, Attractor> = JSON.parse(
+      localStorage.attractors
+    );
+    dictsForTypes['attractor'] = attractorDict;
+  } catch (e) {
+    console.log(e, e.stack);
+  }
 }
 
-function saveProjects() {
-  localStorage.projects = JSON.stringify(projectDict);
+function update(thingType: ThingType, thing: Project | Attractor) {
+  dictsForTypes[thingType][thing.id] = thing;
+  saveAll(thingType);
 }
 
-function getProjects(): Array<Project> {
-  return Object.values(projectDict);
+function saveAll(thingType: ThingType) {
+  localStorage[`${thingType}s`] = JSON.stringify(dictsForTypes[thingType]);
 }
 
-function clearProjects() {
-  projectDict = {};
-  saveProjects();
+function getAll(thingType: ThingType) {
+  return Object.values(dictsForTypes[thingType]);
+}
+
+function clearAll(thingType: ThingType) {
+  dictsForTypes[thingType] = {};
+  saveAll(thingType);
 }
 
 function inflateDates(project: Project) {
@@ -49,8 +66,8 @@ function inflateDateValue(value: string | Date): Date {
 }
 
 module.exports = {
-  updateProject,
-  getProjects,
-  clearProjects,
-  saveProjects
+  update,
+  saveAll,
+  clearAll,
+  getAll
 };
