@@ -59,7 +59,7 @@
     "route-state": "^2.0.5",
     "seedrandom": "^3.0.1",
     "standard-bail": "^2.0.1",
-    "strokerouter": "^2.0.0",
+    "strokerouter": "^3.0.0",
     "tablenest": "^4.0.0",
     "tsify": "^4.0.1",
     "typescript": "^3.7.2"

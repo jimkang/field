@@ -19,7 +19,10 @@ export function renderProps(
     .enter()
     .append('li')
     .classed('prop', true);
-  newProps.append('label').classed('prop-label', true);
+  newProps
+    .append('label')
+    .attr('contenteditable', 'true')
+    .classed('prop-label', true);
   newProps
     .append('input')
     .classed('prop-slider', true)
