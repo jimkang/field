@@ -1,6 +1,7 @@
 import { Thing, NumberProp } from '../types';
 var d3 = require('d3-selection');
 var accessor = require('accessor');
+var wireContentEditable = require('./wire-contenteditable');
 
 export function renderProps(
   thing: Thing,
@@ -11,7 +12,7 @@ export function renderProps(
   var propsRoot = editor.select('.props');
   var allProps = propsRoot
     .selectAll('.prop')
-    .data(Object.values(thing.numberPropsByName), accessor('name'));
+    .data(thing.numberProps, accessor('name'));
 
   allProps.exit().remove();
 
@@ -20,9 +21,10 @@ export function renderProps(
     .append('li')
     .classed('prop', true);
   newProps
-    .append('label')
+    .append('h3')
     .attr('contenteditable', 'true')
-    .classed('prop-label', true);
+    .classed('prop-label', true)
+    .each(setUpContentEditable);
   newProps
     .append('input')
     .classed('prop-slider', true)
@@ -46,7 +48,20 @@ export function renderProps(
   survivingProps.select('.prop-val').attr('value', accessor('value'));
 
   function onValueChange(numberProp: NumberProp) {
-    thing.numberPropsByName[numberProp.name].value = this.value;
+    numberProp.value = this.value;
     onChange(thing);
+  }
+
+  function setUpContentEditable(numberProp: NumberProp) {
+    wireContentEditable({
+      editableSelection: d3.select(this),
+      initialValue: numberProp.name,
+      onContentChanged
+    });
+
+    function onContentChanged(newValue: string) {
+      numberProp.name = newValue;
+      onChange(thing);
+    }
   }
 }

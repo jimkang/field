@@ -71,7 +71,7 @@ function projectsFlow({
       name: `${randomId(4)}-ness`,
       value: 0.5
     };
-    thing.numberPropsByName[prop.name] = prop;
+    thing.numberProps.push(prop);
     onInvalidate();
   }
 }

@@ -58,7 +58,7 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
     var newProject = {
       id: `project-${randomId(4)}`,
       name: 'Cool Project',
-      numberPropsByName: {},
+      numberProps: [],
       created: now,
       lastUpdated: now,
       relationships: {},
@@ -72,7 +72,7 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
     var newAttractor = {
       id: `attractor-${randomId(4)}`,
       name: 'Cool Attractor',
-      numberPropsByName: {},
+      numberProps: [],
       position: [50, 50]
     };
     update('attractor', newAttractor);

@@ -11,7 +11,7 @@ export interface NumberProp {
 export interface Project {
   id: string;
   name: string;
-  numberPropsByName: Record<string, NumberProp>;
+  numberProps: Array<NumberProp>;
   created: Date;
   lastUpdated: Date;
   // Key: relationship name.
@@ -23,7 +23,7 @@ export interface Project {
 export interface Attractor {
   id: string;
   name: string;
-  numberPropsByName: Record<string, NumberProp>;
+  numberProps: Array<NumberProp>;
   position: [number, number];
 }
 
