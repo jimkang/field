@@ -200,12 +200,20 @@ footer {
   stroke-width: 0.1;
 }
 
+#board .chit.attractor circle {
+  fill: #000;
+}
+
 #board .chit.selected circle {
   stroke-width: 0.2;
 }
 
 #board .chit text {
   text-anchor: middle;
+}
+
+#board .chit.attractor text {
+  fill: #fff;
 }
 
 .centered-col {

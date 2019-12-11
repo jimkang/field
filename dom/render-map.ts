@@ -33,12 +33,12 @@ function renderThings(
   selectedThing: Thing
 ) {
   var thingRoot = d3.select(`#${className}-root`);
-  var things = thingRoot.selectAll('.thing').data(thingData, accessor());
+  var things = thingRoot.selectAll('.' + className).data(thingData, accessor());
   things.exit().remove();
   var newThings = things
     .enter()
     .append('g')
-    .classed('thing', true)
+    .classed(className, true)
     .classed('chit', true)
     .on('click', onClickThing);
 
@@ -49,12 +49,12 @@ function renderThings(
     .attr('cy', 5);
   newThings
     .append('text')
-    .classed('thing-name', true)
+    .classed('name', true)
     .attr('x', 5)
     .attr('y', 5);
 
   var currentThings = newThings.merge(things);
-  currentThings.select('.thing-name').text(accessor('name'));
+  currentThings.select('.name').text(accessor('name'));
   currentThings.attr('transform', getTransform);
   currentThings.classed('selected', isSelected);
 
