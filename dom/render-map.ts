@@ -1,6 +1,7 @@
 import { Project, Attractor, Thing } from '../types';
 var d3 = require('d3-selection');
 var accessor = require('accessor');
+var { drag } = require('d3-drag');
 
 export function renderMap({
   projectData,
@@ -8,7 +9,8 @@ export function renderMap({
   selectedProject,
   selectedAttractor,
   onSelectProject,
-  onSelectAttractor
+  onSelectAttractor,
+  onChangeAttractor
 }: {
   projectData: Array<Project>;
   attractorData: Array<Attractor>;
@@ -16,14 +18,26 @@ export function renderMap({
   selectedAttractor: Attractor;
   onSelectProject: (Project) => void;
   onSelectAttractor: (Attractor) => void;
+  onChangeAttractor: (Attractor) => void;
 }) {
+  var applyDragBehavior = drag()
+    .container(d3.select('#board').node())
+    .on('end', onChangeAttractor)
+    .on('drag', updateAttractorPosition);
+
   renderThings(projectData, 'project', onSelectProject, selectedProject);
   renderThings(
     attractorData,
     'attractor',
     onSelectAttractor,
     selectedAttractor
-  );
+  ).call(applyDragBehavior);
+
+  function updateAttractorPosition(attractor) {
+    attractor.position[0] += d3.event.dx;
+    attractor.position[1] += d3.event.dy;
+    d3.select(this).attr('transform', getTransform(attractor));
+  }
 }
 
 function renderThings(
@@ -58,9 +72,7 @@ function renderThings(
   currentThings.attr('transform', getTransform);
   currentThings.classed('selected', isSelected);
 
-  function getTransform(thing: Thing) {
-    return `translate(${getX(thing)}, ${getY(thing)})`;
-  }
+  return currentThings;
 
   function isSelected(thing: Thing) {
     return thing.id === selectedThing.id;
@@ -69,6 +81,10 @@ function renderThings(
   function onClickThing(thing: Thing) {
     onSelectThing({ thingId: thing.id });
   }
+}
+
+function getTransform(thing: Thing) {
+  return `translate(${getX(thing)}, ${getY(thing)})`;
 }
 
 function getX(thing: Thing) {

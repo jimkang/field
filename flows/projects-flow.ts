@@ -45,7 +45,8 @@ function projectsFlow({
     selectedProject,
     selectedAttractor,
     onSelectProject,
-    onSelectAttractor
+    onSelectAttractor,
+    onChangeAttractor
   });
 
   function idIsSelected(targetId: string, thing: Project | Attractor) {
