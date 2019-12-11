@@ -11,7 +11,7 @@ function projectsFlow({
   selectedAttractorId,
   onSelectProject,
   onSelectAttractor,
-  onInvalidateProjects
+  onInvalidate
 }: {
   projectData: Array<Project>;
   attractorData: Array<Attractor>;
@@ -19,7 +19,7 @@ function projectsFlow({
   selectedAttractorId: string;
   onSelectProject: (string) => void;
   onSelectAttractor: (string) => void;
-  onInvalidateProjects: () => void;
+  onInvalidate: () => void;
 }) {
   var selectedProject = projectData.find(
     curry(idIsSelected)(selectedProjectId)
@@ -55,11 +55,12 @@ function projectsFlow({
 
   function onChangeProject(project: Project) {
     update('project', project);
-    onInvalidateProjects();
+    onInvalidate();
   }
 
   function onChangeAttractor(attractor: Attractor) {
     update('attractor', attractor);
+    onInvalidate();
   }
 }
 
