@@ -79,7 +79,13 @@ function renderThings(
   }
 
   function onClickThing(thing: Thing) {
-    onSelectThing({ thingId: thing.id });
+    if (className === 'project') {
+      onSelectThing({ projectId: thing.id });
+    } else if (className === 'attractor') {
+      onSelectThing({ attractorId: thing.id });
+    } else {
+      throw Error('Unknown Thing was clicked.');
+    }
   }
 }
 
