@@ -27,14 +27,14 @@
           <button id="clear-attractors-button">Clear all attractors</button>
         </section>
 
-        <section class="project-editor prop-editor ui">
+        <section class="project-editor prop-editor ui hidden">
           <h2 class="name sheet-name" contenteditable>Slop Cube</h2>
           <div class="edit-field-tip">
             Hit Ctrl+Enter (or click outside of field) to complete editing. Hit
             Esc to cancel edit.
           </div>
           <ul class="props">
-            <li>
+            <li class="prop">
               <label class="prop-label">Done</label>
               <input
                 class="prop-slider"
@@ -52,7 +52,7 @@
                 max="1.0"
               />
             </li>
-            <li>
+            <li class="prop">
               <label class="prop-label">Art</label>
               <input
                 class="prop-slider"
@@ -70,7 +70,7 @@
                 max="1.0"
               />
             </li>
-            <li>
+            <li class="prop">
               <label class="prop-label">Game</label>
               <input
                 class="prop-slider"
@@ -89,11 +89,11 @@
                 max="1.0"
               />
             </li>
-            <li><button>Delete project</button></li>
           </ul>
+          <button>Delete project</button>
         </section>
 
-        <section class="attractor-editor prop-editor ui">
+        <section class="attractor-editor prop-editor ui hidden">
           <h2 class="name props-name" contenteditable>
             Attractor name
           </h2>
@@ -102,7 +102,7 @@
             Esc to cancel edit.
           </div>
           <ul class="props">
-            <li>
+            <li class="prop">
               <label class="prop-label">Done</label>
               <input
                 class="prop-slider"
@@ -120,7 +120,7 @@
                 max="1.0"
               />
             </li>
-            <li>
+            <li class="prop">
               <label class="prop-label">Art</label>
               <input
                 class="prop-slider"
@@ -138,7 +138,7 @@
                 max="1.0"
               />
             </li>
-            <li>
+            <li class="prop">
               <label class="prop-label">Game</label>
               <input
                 class="prop-slider"
@@ -157,8 +157,8 @@
                 max="1.0"
               />
             </li>
-            <li><button>Delete attractor</button></li>
           </ul>
+          <button>Delete attractor</button>
         </section>
 
         <footer class="ui centered-col">

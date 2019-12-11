@@ -3,11 +3,15 @@ export enum ThingType {
   attractor = 'attractor'
 }
 
+export interface NumberProp {
+  name: string;
+  value: number;
+}
+
 export interface Project {
   id: string;
   name: string;
-  numberProps: Record<string, number>;
-  strProps: Record<string, string>;
+  numberPropsByName: Record<string, NumberProp>;
   created: Date;
   lastUpdated: Date;
   // Key: relationship name.
@@ -19,8 +23,7 @@ export interface Project {
 export interface Attractor {
   id: string;
   name: string;
-  numberProps: Record<string, number>;
-  strProps: Record<string, string>;
+  numberPropsByName: Record<string, NumberProp>;
   position: [number, number];
 }
 

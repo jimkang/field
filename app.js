@@ -1,6 +1,6 @@
 var handleError = require('handle-error-web');
 var RouteState = require('route-state');
-var wireControls = require('./dom/wire-controls');
+var wireMainControls = require('./dom/wire-main-controls');
 var d3 = require('d3-selection');
 import { getAll, clearAll, update } from './store';
 var projectsFlow = require('./flows/projects-flow');
@@ -20,7 +20,7 @@ var routeState = RouteState({
 })();
 
 function followRoute({ hideUI, debug, selProj, selAttr }) {
-  wireControls({
+  wireMainControls({
     onAddProjectClick,
     onClearProjectsClick: createRunner([
       () => clearAll('project'),
@@ -42,12 +42,6 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
     var projects = getAll('project');
     var attractors = getAll('attractor');
 
-    if (!selProj) {
-      // TODO: Pick latest?
-      routeState.addToRoute({ selProj: projects[0].id });
-      return;
-    }
-
     projectsFlow({
       projectData: projects,
       attractorData: attractors,
@@ -64,8 +58,7 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
     var newProject = {
       id: `project-${randomId(4)}`,
       name: 'Cool Project',
-      numberProps: {},
-      strProps: {},
+      numberPropsByName: {},
       created: now,
       lastUpdated: now,
       relationships: {},
@@ -79,7 +72,7 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
     var newAttractor = {
       id: `attractor-${randomId(4)}`,
       name: 'Cool Attractor',
-      numberProps: {},
+      numberPropsByName: {},
       position: [50, 50]
     };
     update('attractor', newAttractor);

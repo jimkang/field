@@ -2,6 +2,7 @@ import { Thing, ThingType } from '../types';
 var cloneDeep = require('lodash.clonedeep');
 var StrokeRouter = require('strokerouter');
 var d3 = require('d3-selection');
+import { renderProps } from './render-props';
 
 var strokeRouter = StrokeRouter(document);
 
@@ -14,7 +15,13 @@ export function renderEditor({
   thingType: ThingType;
   onChange: (Thing) => void;
 }) {
+  d3.select(`.${thingType}-editor`).classed('hidden', !thing);
+  if (!thing) {
+    return;
+  }
+
   renderNameField(thing, thingType, onNameChanged);
+  renderProps(thing, thingType, onChange);
 
   function onNameChanged(newText) {
     var copy = cloneDeep(thing);

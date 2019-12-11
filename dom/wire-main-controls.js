@@ -1,7 +1,7 @@
 var OLPE = require('one-listener-per-element');
 var { on } = OLPE();
 
-function wireControls({
+function wireMainControls({
   onAddProjectClick,
   onClearProjectsClick,
   onAddAttractorClick,
@@ -13,4 +13,4 @@ function wireControls({
   on('#clear-attractors-button', 'click', onClearAttractorsClick);
 }
 
-module.exports = wireControls;
+module.exports = wireMainControls;
