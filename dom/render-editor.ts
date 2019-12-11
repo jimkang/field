@@ -9,12 +9,16 @@ var strokeRouter = StrokeRouter(document);
 export function renderEditor({
   thing,
   thingType,
-  onChange
+  onChange,
+  onAddProp
 }: {
   thing: Thing;
   thingType: ThingType;
   onChange: (Thing) => void;
+  onAddProp: (Thing) => void;
 }) {
+  var editor = d3.select(`.${thingType}-editor`);
+  editor.classed('hidden', !thing);
   d3.select(`.${thingType}-editor`).classed('hidden', !thing);
   if (!thing) {
     return;
@@ -22,11 +26,16 @@ export function renderEditor({
 
   renderNameField(thing, thingType, onNameChanged);
   renderProps(thing, thingType, onChange);
+  editor.select('.add-prop-button').on('click', onAddPropClick);
 
   function onNameChanged(newText) {
     var copy = cloneDeep(thing);
     copy.name = newText;
     onChange(copy);
+  }
+
+  function onAddPropClick() {
+    onAddProp(thing);
   }
 }
 

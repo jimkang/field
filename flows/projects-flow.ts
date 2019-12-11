@@ -1,8 +1,9 @@
-import { Project, Attractor, ThingType } from '../types';
+import { Project, Attractor, ThingType, Thing, NumberProp } from '../types';
 import { renderEditor } from '../dom/render-editor';
 import { renderMap } from '../dom/render-map';
 var { update } = require('../store');
 var curry = require('lodash.curry');
+var randomId = require('@jimkang/randomid')();
 
 function projectsFlow({
   projectData,
@@ -31,12 +32,14 @@ function projectsFlow({
   renderEditor({
     thing: selectedProject,
     thingType: ThingType.project,
-    onChange: onChangeProject
+    onChange: onChangeProject,
+    onAddProp
   });
   renderEditor({
     thing: selectedAttractor,
     thingType: ThingType.attractor,
-    onChange: onChangeAttractor
+    onChange: onChangeAttractor,
+    onAddProp
   });
 
   renderMap({
@@ -60,6 +63,15 @@ function projectsFlow({
 
   function onChangeAttractor(attractor: Attractor) {
     update('attractor', attractor);
+    onInvalidate();
+  }
+
+  function onAddProp(thing: Thing) {
+    var prop: NumberProp = {
+      name: `${randomId(4)}-ness`,
+      value: 0.5
+    };
+    thing.numberPropsByName[prop.name] = prop;
     onInvalidate();
   }
 }

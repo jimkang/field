@@ -38,8 +38,9 @@ export function renderProps(
     .on('change', onValueChange);
 
   var survivingProps = newProps.merge(allProps);
-  survivingProps.select('.prop-label').text(accessor('value'));
-  survivingProps.select('.prop-slider').text(accessor('value'));
+  survivingProps.select('.prop-label').text(accessor('name'));
+  survivingProps.select('.prop-slider').attr('value', accessor('value'));
+  survivingProps.select('.prop-val').attr('value', accessor('value'));
 
   function onValueChange(numberProp: NumberProp) {
     thing.numberPropsByName[numberProp.name].value = this.value;
