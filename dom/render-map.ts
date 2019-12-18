@@ -30,14 +30,19 @@ export function renderMap({
     .on('end', onChangeAttractor)
     .on('drag', updateAttractorPosition);
 
+  var simulationNeedsRestart = true;
   if (!simulation) {
     simulation = forceSimulation();
+    simulationNeedsRestart = false;
   }
   simulation
     .force('attractors', updateProjectChitVelocities)
     .force('separation', forceCollide(thingRadius))
     .nodes(projectData)
     .on('tick', renderProjectChits);
+  if (simulationNeedsRestart) {
+    simulation.restart();
+  }
 
   renderThings(
     attractorData,
