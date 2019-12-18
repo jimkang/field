@@ -75,7 +75,7 @@ function renderThings(
   return currentThings;
 
   function isSelected(thing: Thing) {
-    return thing.id === selectedThing.id;
+    return selectedThing && thing.id === selectedThing.id;
   }
 
   function onClickThing(thing: Thing) {
