@@ -49,7 +49,7 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
       selectedAttractorId: selAttr,
       onSelectProject,
       onSelectAttractor,
-      onInvalidate: refreshFromStore
+      onInvalidate: routeState.routeFromHash
     });
   }
 
