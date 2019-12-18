@@ -129,10 +129,7 @@ button {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  border: 4px dashed #666;
-  border-radius: 0.2em;
   padding-top: 1em;
-  margin-bottom: 1em;
 }
 
 .controls div {
@@ -235,8 +232,11 @@ footer {
   position: relative;
 }
 
-.project-editor {
+.editor-container {
+  background-color: hsla(0, 0%, 0%, 0.1);
+  margin-bottom: 0.5em;
   border: 4px dashed #666;
+  border-radius: 0.2em;
 }
 
 @media all and (max-height: 568px) {

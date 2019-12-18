@@ -1,7 +1,7 @@
 import { Project, Attractor, ThingType, Thing, NumberProp } from '../types';
 import { renderEditor } from '../dom/render-editor';
 import { renderMap } from '../dom/render-map';
-var { update } = require('../store');
+var { update, deleteThing } = require('../store');
 var curry = require('lodash.curry');
 var randomId = require('@jimkang/randomid')();
 
@@ -33,13 +33,15 @@ function projectsFlow({
     thing: selectedProject,
     thingType: ThingType.project,
     onChange: onChangeProject,
-    onAddProp
+    onAddProp,
+    onDeleteThing: onDeleteProject
   });
   renderEditor({
     thing: selectedAttractor,
     thingType: ThingType.attractor,
     onChange: onChangeAttractor,
-    onAddProp
+    onAddProp,
+    onDeleteThing: onDeleteAttractor
   });
 
   renderMap({
@@ -72,6 +74,16 @@ function projectsFlow({
       value: 0.5
     };
     thing.numberProps.push(prop);
+    onInvalidate();
+  }
+
+  function onDeleteProject(project: Project) {
+    deleteThing('project', project);
+    onInvalidate();
+  }
+
+  function onDeleteAttractor(attractor: Attractor) {
+    deleteThing('attractor', attractor);
     onInvalidate();
   }
 }

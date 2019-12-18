@@ -8,12 +8,14 @@ export function renderEditor({
   thing,
   thingType,
   onChange,
-  onAddProp
+  onAddProp,
+  onDeleteThing
 }: {
   thing: Thing;
   thingType: ThingType;
   onChange: (Thing) => void;
   onAddProp: (Thing) => void;
+  onDeleteThing: (Thing) => void;
 }) {
   var editor = d3.select(`.${thingType}-editor`);
   editor.classed('hidden', !thing);
@@ -30,6 +32,7 @@ export function renderEditor({
 
   renderProps(thing, thingType, onChange);
   editor.select('.add-prop-button').on('click', onAddPropClick);
+  editor.select('.delete-button').on('click', onDeleteClick);
 
   function onNameChanged(newText) {
     var copy = cloneDeep(thing);
@@ -39,5 +42,10 @@ export function renderEditor({
 
   function onAddPropClick() {
     onAddProp(thing);
+  }
+
+  function onDeleteClick() {
+    // TODO: Confirmation
+    onDeleteThing(thing);
   }
 }

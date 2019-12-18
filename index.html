@@ -18,7 +18,7 @@
       </section>
 
       <section id="ui-overlay" class="ui">
-        <section class="controls ui">
+        <section class="controls ui editor-container">
           <button id="add-project-button">Add a project</button>
           <button id="add-attractor-button">Add an attractor</button>
           <button id="export-button">Export</button>
@@ -27,7 +27,7 @@
           <button id="clear-attractors-button">Clear all attractors</button>
         </section>
 
-        <section class="project-editor prop-editor ui hidden">
+        <section class="project-editor prop-editor ui hidden editor-container">
           <h2 class="name sheet-name" contenteditable="true">Slop Cube</h2>
           <div class="edit-field-tip">
             Hit Ctrl+Enter (or click outside of field) to complete editing. Hit
@@ -91,10 +91,10 @@
             </li>
           </ul>
           <button class="add-prop-button">Add project property</button>
-          <button>Delete project</button>
+          <button class="delete-button">Delete project</button>
         </section>
 
-        <section class="attractor-editor prop-editor ui hidden">
+        <section class="attractor-editor prop-editor ui hidden editor-container">
           <h2 class="name props-name" contenteditable="true">
             Attractor name
           </h2>
@@ -160,7 +160,7 @@
             </li>
           </ul>
           <button class="add-prop-button">Add attractor property</button>
-          <button>Delete attractor</button>
+          <button class="delete-button">Delete attractor</button>
         </section>
 
         <footer class="ui centered-col">

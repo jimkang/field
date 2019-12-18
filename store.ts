@@ -51,6 +51,11 @@ function clearAll(thingType: ThingType) {
   saveAll(thingType);
 }
 
+function deleteThing(thingType: ThingType, thing: Project | Attractor) {
+  delete dictsForTypes[thingType][thing.id];
+  saveAll(thingType);
+}
+
 function inflateDates(project: Project) {
   project.lastUpdated = inflateDateValue(project.lastUpdated);
   project.created = inflateDateValue(project.created);
@@ -68,6 +73,7 @@ function inflateDateValue(value: string | Date): Date {
 module.exports = {
   update,
   saveAll,
+  deleteThing,
   clearAll,
   getAll
 };
