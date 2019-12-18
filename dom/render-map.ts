@@ -41,7 +41,7 @@ export function renderMap({
     .nodes(projectData)
     .on('tick', renderProjectChits);
   if (simulationNeedsRestart) {
-    simulation.restart();
+    restartSimulationInEarnest();
   }
 
   renderThings(
@@ -59,6 +59,10 @@ export function renderMap({
     attractor.x += d3.event.dx;
     attractor.y += d3.event.dy;
     d3.select(this).attr('transform', getTransform(attractor));
+    restartSimulationInEarnest();
+  }
+
+  function restartSimulationInEarnest() {
     simulation.alpha(1);
     simulation.restart();
   }
