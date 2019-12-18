@@ -187,7 +187,7 @@ footer {
 
 #board {
   /* Total board width is 100. */
-  font-size: 1.5; 
+  font-size: 1.5;
 }
 
 #board .chit {
@@ -234,9 +234,12 @@ footer {
   position: relative;
 }
 
+.project-editor {
+  border: 4px dashed #666;
+}
+
 @media all and (max-height: 568px) {
   body {
     font-size: 18px;
   }
 }
-
