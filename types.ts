@@ -17,14 +17,20 @@ export interface Project {
   // Key: relationship name.
   // Value: List of project ids.
   relationships: Record<string, Array<string>>;
-  position: [number, number];
+  // d3-force properties:
+  index: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
 }
 
 export interface Attractor {
   id: string;
   name: string;
   numberProps: Array<NumberProp>;
-  position: [number, number];
+  x: number;
+  y: number;
 }
 
 export type Thing = Project | Attractor;

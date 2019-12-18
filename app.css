@@ -37,6 +37,7 @@ body > section {
 #board {
   border-radius: 8px;
   margin-bottom: 1em;
+  border: 1px solid #444;
 }
 
 .debug #board {

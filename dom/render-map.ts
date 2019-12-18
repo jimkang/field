@@ -2,6 +2,9 @@ import { Project, Attractor, Thing } from '../types';
 var d3 = require('d3-selection');
 var accessor = require('accessor');
 var { drag } = require('d3-drag');
+var { forceSimulation } = require('d3-force');
+
+var simulation;
 
 export function renderMap({
   projectData,
@@ -25,7 +28,13 @@ export function renderMap({
     .on('end', onChangeAttractor)
     .on('drag', updateAttractorPosition);
 
-  renderThings(projectData, 'project', onSelectProject, selectedProject);
+  if (!simulation) {
+    simulation = forceSimulation();
+  }
+  simulation.force('attractors', updateProjectChitPositions);
+  simulation.nodes(projectData);
+  simulation.on('tick', renderProjectChits);
+
   renderThings(
     attractorData,
     'attractor',
@@ -33,10 +42,23 @@ export function renderMap({
     selectedAttractor
   ).call(applyDragBehavior);
 
+  function renderProjectChits() {
+    renderThings(projectData, 'project', onSelectProject, selectedProject);
+  }
+
   function updateAttractorPosition(attractor) {
-    attractor.position[0] += d3.event.dx;
-    attractor.position[1] += d3.event.dy;
+    attractor.x += d3.event.dx;
+    attractor.y += d3.event.dy;
     d3.select(this).attr('transform', getTransform(attractor));
+  }
+
+  function updateProjectChitPositions(alpha) {
+    var chits = projectData;
+    for (var i = 0, n = chits.length, chit, k = alpha * 0.1; i < n; ++i) {
+      chit = chits[i];
+      chit.vx -= chit.x * k;
+      chit.vy -= chit.y * k;
+    }
   }
 }
 
@@ -90,15 +112,7 @@ function renderThings(
 }
 
 function getTransform(thing: Thing) {
-  return `translate(${getX(thing)}, ${getY(thing)})`;
-}
-
-function getX(thing: Thing) {
-  return thing.position[0];
-}
-
-function getY(thing: Thing) {
-  return thing.position[1];
+  return `translate(${thing.x}, ${thing.y})`;
 }
 
 /*

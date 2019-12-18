@@ -62,7 +62,8 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
       created: now,
       lastUpdated: now,
       relationships: {},
-      position: [roll(100), roll(100)]
+      x: roll(100),
+      y: roll(100)
     };
     update('project', newProject);
     onSelectProject({ projectId: newProject.id });
@@ -73,7 +74,8 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
       id: `attractor-${randomId(4)}`,
       name: 'Cool Attractor',
       numberProps: [],
-      position: [50, 50]
+      x: 50,
+      y: 50
     };
     update('attractor', newAttractor);
     onSelectAttractor({ attractorId: newAttractor.id });
