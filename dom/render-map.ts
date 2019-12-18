@@ -1,4 +1,4 @@
-import { Project, Attractor, Thing } from '../types';
+import { Project, Attractor, Thing, NumberProp } from '../types';
 var d3 = require('d3-selection');
 var accessor = require('accessor');
 var { drag } = require('d3-drag');
@@ -50,14 +50,19 @@ export function renderMap({
     attractor.x += d3.event.dx;
     attractor.y += d3.event.dy;
     d3.select(this).attr('transform', getTransform(attractor));
+    simulation.restart();
   }
 
   function updateProjectChitPositions(alpha) {
-    var chits = projectData;
-    for (var i = 0, n = chits.length, chit, k = alpha * 0.1; i < n; ++i) {
-      chit = chits[i];
-      chit.vx -= chit.x * k;
-      chit.vy -= chit.y * k;
+    var projects = projectData;
+    for (var i = 0, n = projects.length, project, k = alpha * 0.1; i < n; ++i) {
+      project = projects[i];
+      for (let j = 0; j < attractorData.length; ++j) {
+        let attractor = attractorData[j];
+        let attraction = getAttraction(attractor, project);
+        project.vx += (attractor.x - project.x) * k * attraction;
+        project.vy += (attractor.y - project.y) * k * attraction;
+      }
     }
   }
 }
@@ -126,3 +131,19 @@ function getY(thing: Thing) {
   return +thing.created.getTime() % 100;
 }
 */
+
+function getAttraction(attractor: Attractor, project: Project): number {
+  var attraction = 0.0;
+  for (var i = 0; i < attractor.numberProps.length; ++i) {
+    let attractorProp: NumberProp = attractor.numberProps[i];
+    for (let j = 0; j < project.numberProps.length; ++j) {
+      let projectProp: NumberProp = project.numberProps[j];
+      if (projectProp.name === attractorProp.name) {
+        attraction +=
+          (1.0 - Math.abs(projectProp.value - attractorProp.value)) /
+          attractor.numberProps.length;
+      }
+    }
+  }
+  return attraction;
+}
