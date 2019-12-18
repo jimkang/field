@@ -50,6 +50,7 @@ export function renderMap({
     attractor.x += d3.event.dx;
     attractor.y += d3.event.dy;
     d3.select(this).attr('transform', getTransform(attractor));
+    simulation.alpha(1);
     simulation.restart();
   }
 
@@ -59,9 +60,11 @@ export function renderMap({
       project = projects[i];
       for (let j = 0; j < attractorData.length; ++j) {
         let attractor = attractorData[j];
-        let attraction = getAttraction(attractor, project);
-        project.vx += (attractor.x - project.x) * k * attraction;
-        project.vy += (attractor.y - project.y) * k * attraction;
+        const attraction = getAttraction(attractor, project);
+        const xDiff = attractor.x - project.x;
+        const yDiff = attractor.y - project.y;
+        project.vx += xDiff * k * attraction;
+        project.vy += yDiff * k * attraction;
       }
     }
   }
