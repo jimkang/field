@@ -77,7 +77,9 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
       name: 'Cool Attractor',
       numberProps: [],
       x: 50,
-      y: 50
+      y: 50,
+      fx: 50,
+      fy: 50
     };
     update('attractor', newAttractor);
     onSelectAttractor({ attractorId: newAttractor.id });

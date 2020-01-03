@@ -41,7 +41,7 @@ export function renderMap({
     //.alphaDecay(0)
     .force('separation', forceCollide(thingRadius))
     .alpha(0.1)
-    .nodes(projectData)
+    .nodes((projectData as Array<Thing>).concat(attractorData as Array<Thing>))
     .on('tick', renderProjectChits);
   if (simulationNeedsRestart) {
     restartSimulationInEarnest();
@@ -59,8 +59,8 @@ export function renderMap({
   }
 
   function updateAttractorPosition(attractor) {
-    attractor.x += d3.event.dx;
-    attractor.y += d3.event.dy;
+    attractor.fx += d3.event.dx;
+    attractor.fy += d3.event.dy;
     d3.select(this).attr('transform', getTransform(attractor));
     restartSimulationInEarnest();
   }

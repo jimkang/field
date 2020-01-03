@@ -31,6 +31,8 @@ export interface Attractor {
   numberProps: Array<NumberProp>;
   x: number;
   y: number;
+  fx: number;
+  fy: number;
 }
 
 export type Thing = Project | Attractor;
