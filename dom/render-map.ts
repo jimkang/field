@@ -37,7 +37,10 @@ export function renderMap({
   }
   simulation
     .force('attractors', updateProjectChitVelocities)
+    //.velocityDecay(0)
+    //.alphaDecay(0)
     .force('separation', forceCollide(thingRadius))
+    .alpha(0.1)
     .nodes(projectData)
     .on('tick', renderProjectChits);
   if (simulationNeedsRestart) {
@@ -69,13 +72,13 @@ export function renderMap({
 
   function updateProjectChitVelocities(alpha) {
     var projects = projectData;
-    for (var i = 0, n = projects.length, project, k = alpha * 0.1; i < n; ++i) {
+    for (var i = 0, n = projects.length, project, k = alpha; i < n; ++i) {
       project = projects[i];
       for (let j = 0; j < attractorData.length; ++j) {
         let attractor = attractorData[j];
         const attraction = getAttraction(attractor, project);
-        const xDiff = attractor.x - project.x - 2 * thingRadius;
-        const yDiff = attractor.y - project.y - 2 * thingRadius;
+        const xDiff = attractor.x - project.x;
+        const yDiff = attractor.y - project.y;
         project.vx += xDiff * k * attraction;
         project.vy += yDiff * k * attraction;
       }
@@ -145,9 +148,7 @@ function getAttraction(attractor: Attractor, project: Project): number {
     for (let j = 0; j < project.numberProps.length; ++j) {
       let projectProp: NumberProp = project.numberProps[j];
       if (projectProp.name === attractorProp.name) {
-        attraction +=
-          (1.0 - Math.abs(projectProp.value - attractorProp.value)) /
-          attractor.numberProps.length;
+        attraction += 1.0 - Math.abs(projectProp.value - attractorProp.value);
       }
     }
   }

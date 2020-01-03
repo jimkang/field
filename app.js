@@ -63,7 +63,9 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
       lastUpdated: now,
       relationships: {},
       x: roll(100),
-      y: roll(100)
+      y: roll(100),
+      vx: 0,
+      vy: 0
     };
     update('project', newProject);
     onSelectProject({ projectId: newProject.id });
