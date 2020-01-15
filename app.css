@@ -239,6 +239,23 @@ footer {
   border-radius: 0.2em;
 }
 
+.name {
+  line-height: 1em;
+  margin-top: -0.5em;
+  text-align: center;
+}
+
+.name-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.attractor .name {
+  color: white;
+}
+
 @media all and (max-height: 568px) {
   body {
     font-size: 18px;

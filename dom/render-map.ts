@@ -122,10 +122,16 @@ export function renderMap({
       .attr('cx', thingRadius)
       .attr('cy', thingRadius);
     newThings
-      .append('text')
-      .classed('name', true)
-      .attr('x', thingRadius)
-      .attr('y', thingRadius);
+      .append('foreignObject')
+      .attr('width', thingRadius * 2)
+      .attr('height', thingRadius * 2)
+      // Never forget: Using the namespace when appending an html
+      // element to a foreignObject is incredibly important. Without it,
+      // a div will not size itself correctly for its contents.
+      .append('xhtml:div')
+      .classed('name-container', true)
+      .append('xhtml:div')
+      .classed('name', true);
 
     var currentThings = newThings.merge(things);
     currentThings.select('.name').text(accessor('name'));
