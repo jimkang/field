@@ -32,4 +32,4 @@ sync:
     --no-perms
 
 set-up-server-dir:
-	ssh $(USER)@$(SERVER) "sudo mkdir -p $(APPDIR)"
+	ssh $(USER)@$(SERVER) "mkdir -p $(APPDIR)"
