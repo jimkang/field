@@ -1,7 +1,9 @@
-workings
+field
 ==================
 
-It's a map of your projects, rearrangeable by centers of gravity you define so that, in the best case:
+This is your personal forces field. That is, it is a field upon you can place points that are sources of forces that you define. Then, you can add objects that those sources act upon and let them rearrange your object in 2D place.
+
+One possible use of this app is to make a map of your projects, rearrangeable by centers of gravity you define so that, in the best case:
 
 - You won't lose sight of stuff.
 - You'll be able to pick the best thing to do.
@@ -21,7 +23,7 @@ First, install Node. Then:
 Usage
 -----
 
-    make run    
+    make run
 
 Then, wzrd will say something like:
 
@@ -38,4 +40,3 @@ License
 -------
 
 BSD
-

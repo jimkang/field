@@ -1,5 +1,5 @@
 {
-  "name": "workings",
+  "name": "field",
   "version": "1.0.0",
   "description": "Slopcube",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:jimkang/workings.git"
+    "url": "git@github.com:jimkang/field.git"
   },
   "keywords": [
     "cubes"
@@ -17,9 +17,9 @@
   "author": "Jim Kang",
   "license": "BSD",
   "bugs": {
-    "url": "https://github.com/jimkang/workings/issues"
+    "url": "https://github.com/jimkang/field/issues"
   },
-  "homepage": "https://github.com/jimkang/workings",
+  "homepage": "https://github.com/jimkang/field",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
