@@ -1,6 +1,6 @@
 export enum ThingType {
   project = 'project',
-  attractor = 'attractor'
+  forceSource = 'forceSource'
 }
 
 export interface NumberProp {
@@ -25,7 +25,7 @@ export interface Project {
   vy: number;
 }
 
-export interface Attractor {
+export interface ForceSource {
   id: string;
   name: string;
   numberProps: Array<NumberProp>;
@@ -35,4 +35,4 @@ export interface Attractor {
   fy: number;
 }
 
-export type Thing = Project | Attractor;
+export type Thing = Project | ForceSource;

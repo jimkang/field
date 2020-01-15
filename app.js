@@ -26,9 +26,9 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
       () => clearAll('project'),
       refreshFromStore
     ]),
-    onAddAttractorClick,
-    onClearAttractorsClick: createRunner([
-      () => clearAll('attractor'),
+    onAddForceSourceClick,
+    onClearForceSourcesClick: createRunner([
+      () => clearAll('forceSource'),
       refreshFromStore
     ])
   });
@@ -40,15 +40,15 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
 
   function refreshFromStore() {
     var projects = getAll('project');
-    var attractors = getAll('attractor');
+    var forceSources = getAll('forceSource');
 
     projectsFlow({
       projectData: projects,
-      attractorData: attractors,
+      forceSourceData: forceSources,
       selectedProjectId: selProj,
-      selectedAttractorId: selAttr,
+      selectedForceSourceId: selAttr,
       onSelectProject,
-      onSelectAttractor,
+      onSelectForceSource,
       onInvalidate: routeState.routeFromHash
     });
   }
@@ -71,26 +71,26 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
     onSelectProject({ projectId: newProject.id });
   }
 
-  function onAddAttractorClick() {
-    var newAttractor = {
-      id: `attractor-${randomId(4)}`,
-      name: 'Cool Attractor',
+  function onAddForceSourceClick() {
+    var newForceSource = {
+      id: `forceSource-${randomId(4)}`,
+      name: 'Cool ForceSource',
       numberProps: [],
       x: 50,
       y: 50,
       fx: 50,
       fy: 50
     };
-    update('attractor', newAttractor);
-    onSelectAttractor({ attractorId: newAttractor.id });
+    update('forceSource', newForceSource);
+    onSelectForceSource({ forceSourceId: newForceSource.id });
   }
 
   function onSelectProject({ projectId }) {
     routeState.addToRoute({ selProj: projectId });
   }
 
-  function onSelectAttractor({ attractorId }) {
-    routeState.addToRoute({ selAttr: attractorId });
+  function onSelectForceSource({ forceSourceId }) {
+    routeState.addToRoute({ selAttr: forceSourceId });
   }
 }
 

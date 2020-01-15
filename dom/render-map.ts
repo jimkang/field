@@ -1,4 +1,4 @@
-import { Project, Attractor, Thing, NumberProp } from '../types';
+import { Project, ForceSource, Thing, NumberProp } from '../types';
 var d3 = require('d3-selection');
 var accessor = require('accessor');
 var { drag } = require('d3-drag');
@@ -16,29 +16,29 @@ boardSel.call(zoomer);
 
 export function renderMap({
   projectData,
-  attractorData,
+  forceSourceData,
   selectedProject,
-  selectedAttractor,
+  selectedForceSource,
   thingRadius = 5,
   onSelectProject,
-  onSelectAttractor,
-  onChangeAttractor
+  onSelectForceSource,
+  onChangeForceSource
 }: {
   projectData: Array<Project>;
-  attractorData: Array<Attractor>;
+  forceSourceData: Array<ForceSource>;
   selectedProject: Project;
-  selectedAttractor: Attractor;
+  selectedForceSource: ForceSource;
   thingRadius?: number;
   onSelectProject: (Project) => void;
-  onSelectAttractor: (Attractor) => void;
-  onChangeAttractor: (Attractor) => void;
+  onSelectForceSource: (ForceSource) => void;
+  onChangeForceSource: (ForceSource) => void;
 }) {
   var posLastUpdatedTime = 0.0;
 
   var applyDragBehavior = drag()
     .container(boardSel.node())
-    .on('end', onChangeAttractor)
-    .on('drag', updateAttractorPosition);
+    .on('end', onChangeForceSource)
+    .on('drag', updateForceSourcePosition);
 
   var simulationNeedsRestart = true;
   if (!simulation) {
@@ -46,32 +46,32 @@ export function renderMap({
     simulationNeedsRestart = false;
   }
   simulation
-    .force('attractors', updateProjectChitVelocities)
+    .force('forceSources', updateProjectChitVelocities)
     //.velocityDecay(0)
     //.alphaDecay(0)
     .force('separation', forceCollide(thingRadius).strength(0.3))
     .alpha(0.1)
-    .nodes((projectData as Array<Thing>).concat(attractorData as Array<Thing>))
+    .nodes((projectData as Array<Thing>).concat(forceSourceData as Array<Thing>))
     .on('tick', renderProjectChits);
   if (simulationNeedsRestart) {
     restartSimulationInEarnest(minIntervalForRestartingSim + 1);
   }
 
   renderThings(
-    attractorData,
-    'attractor',
-    onSelectAttractor,
-    selectedAttractor
+    forceSourceData,
+    'forceSource',
+    onSelectForceSource,
+    selectedForceSource
   ).call(applyDragBehavior);
 
   function renderProjectChits() {
     renderThings(projectData, 'project', onSelectProject, selectedProject);
   }
 
-  function updateAttractorPosition(attractor) {
-    attractor.fx += d3.event.dx;
-    attractor.fy += d3.event.dy;
-    d3.select(this).attr('transform', getTransform(attractor));
+  function updateForceSourcePosition(forceSource) {
+    forceSource.fx += d3.event.dx;
+    forceSource.fy += d3.event.dy;
+    d3.select(this).attr('transform', getTransform(forceSource));
     restartSimulationInEarnest(d3.event.timeStamp);
   }
 
@@ -87,11 +87,11 @@ export function renderMap({
     var projects = projectData;
     for (var i = 0, n = projects.length, project, k = alpha; i < n; ++i) {
       project = projects[i];
-      for (let j = 0; j < attractorData.length; ++j) {
-        let attractor = attractorData[j];
-        const attraction = getAttraction(attractor, project);
-        const xDiff = attractor.x - project.x;
-        const yDiff = attractor.y - project.y;
+      for (let j = 0; j < forceSourceData.length; ++j) {
+        let forceSource = forceSourceData[j];
+        const attraction = getAttraction(forceSource, project);
+        const xDiff = forceSource.x - project.x;
+        const yDiff = forceSource.y - project.y;
         project.vx += xDiff * k * attraction;
         project.vy += yDiff * k * attraction;
       }
@@ -147,8 +147,8 @@ export function renderMap({
     function onClickThing(thing: Thing) {
       if (className === 'project') {
         onSelectThing({ projectId: thing.id });
-      } else if (className === 'attractor') {
-        onSelectThing({ attractorId: thing.id });
+      } else if (className === 'forceSource') {
+        onSelectThing({ forceSourceId: thing.id });
       } else {
         throw Error('Unknown Thing was clicked.');
       }
@@ -160,14 +160,14 @@ function getTransform(thing: Thing) {
   return `translate(${thing.x}, ${thing.y})`;
 }
 
-function getAttraction(attractor: Attractor, project: Project): number {
+function getAttraction(forceSource: ForceSource, project: Project): number {
   var attraction = 0.0;
-  for (var i = 0; i < attractor.numberProps.length; ++i) {
-    let attractorProp: NumberProp = attractor.numberProps[i];
+  for (var i = 0; i < forceSource.numberProps.length; ++i) {
+    let forceSourceProp: NumberProp = forceSource.numberProps[i];
     for (let j = 0; j < project.numberProps.length; ++j) {
       let projectProp: NumberProp = project.numberProps[j];
-      if (projectProp.name === attractorProp.name) {
-        attraction += 1.0 - Math.abs(projectProp.value - attractorProp.value);
+      if (projectProp.name === forceSourceProp.name) {
+        attraction += 1.0 - Math.abs(projectProp.value - forceSourceProp.value);
       }
     }
   }

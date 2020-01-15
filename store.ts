@@ -1,11 +1,11 @@
-import { Project, Attractor, ThingType, Thing } from './types';
+import { Project, ForceSource, ThingType, Thing } from './types';
 
 // Singleton.
 
 // Load from localStorage when the module is loaded.
 var dictsForTypes: Record<string, Record<string, Thing>> = {
   project: {},
-  attractor: {}
+  forceSource: {}
 };
 
 if (window.localStorage.projects) {
@@ -22,18 +22,18 @@ if (window.localStorage.projects) {
   }
 }
 
-if (window.localStorage.attractors) {
+if (window.localStorage.forceSources) {
   try {
-    var attractorDict: Record<string, Attractor> = JSON.parse(
-      localStorage.attractors
+    var forceSourceDict: Record<string, ForceSource> = JSON.parse(
+      localStorage.forceSources
     );
-    dictsForTypes['attractor'] = attractorDict;
+    dictsForTypes['forceSource'] = forceSourceDict;
   } catch (e) {
     console.log(e, e.stack);
   }
 }
 
-function update(thingType: ThingType, thing: Project | Attractor) {
+function update(thingType: ThingType, thing: Project | ForceSource) {
   dictsForTypes[thingType][thing.id] = thing;
   saveAll(thingType);
 }
@@ -51,7 +51,7 @@ function clearAll(thingType: ThingType) {
   saveAll(thingType);
 }
 
-function deleteThing(thingType: ThingType, thing: Project | Attractor) {
+function deleteThing(thingType: ThingType, thing: Project | ForceSource) {
   delete dictsForTypes[thingType][thing.id];
   saveAll(thingType);
 }

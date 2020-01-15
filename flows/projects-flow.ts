@@ -1,4 +1,4 @@
-import { Project, Attractor, ThingType, Thing, NumberProp } from '../types';
+import { Project, ForceSource, ThingType, Thing, NumberProp } from '../types';
 import { renderEditor } from '../dom/render-editor';
 import { renderMap } from '../dom/render-map';
 var { update, deleteThing } = require('../store');
@@ -7,26 +7,26 @@ var randomId = require('@jimkang/randomid')();
 
 function projectsFlow({
   projectData,
-  attractorData,
+  forceSourceData,
   selectedProjectId,
-  selectedAttractorId,
+  selectedForceSourceId,
   onSelectProject,
-  onSelectAttractor,
+  onSelectForceSource,
   onInvalidate
 }: {
   projectData: Array<Project>;
-  attractorData: Array<Attractor>;
+  forceSourceData: Array<ForceSource>;
   selectedProjectId: string;
-  selectedAttractorId: string;
+  selectedForceSourceId: string;
   onSelectProject: (string) => void;
-  onSelectAttractor: (string) => void;
+  onSelectForceSource: (string) => void;
   onInvalidate: () => void;
 }) {
   var selectedProject = projectData.find(
     curry(idIsSelected)(selectedProjectId)
   );
-  var selectedAttractor = attractorData.find(
-    curry(idIsSelected)(selectedAttractorId)
+  var selectedForceSource = forceSourceData.find(
+    curry(idIsSelected)(selectedForceSourceId)
   );
 
   renderEditor({
@@ -37,24 +37,24 @@ function projectsFlow({
     onDeleteThing: onDeleteProject
   });
   renderEditor({
-    thing: selectedAttractor,
-    thingType: ThingType.attractor,
-    onChange: onChangeAttractor,
+    thing: selectedForceSource,
+    thingType: ThingType.forceSource,
+    onChange: onChangeForceSource,
     onAddProp,
-    onDeleteThing: onDeleteAttractor
+    onDeleteThing: onDeleteForceSource
   });
 
   renderMap({
     projectData,
-    attractorData,
+    forceSourceData,
     selectedProject,
-    selectedAttractor,
+    selectedForceSource,
     onSelectProject,
-    onSelectAttractor,
-    onChangeAttractor
+    onSelectForceSource,
+    onChangeForceSource
   });
 
-  function idIsSelected(targetId: string, thing: Project | Attractor) {
+  function idIsSelected(targetId: string, thing: Project | ForceSource) {
     return thing.id === targetId;
   }
 
@@ -63,8 +63,8 @@ function projectsFlow({
     onInvalidate();
   }
 
-  function onChangeAttractor(attractor: Attractor) {
-    update('attractor', attractor);
+  function onChangeForceSource(forceSource: ForceSource) {
+    update('forceSource', forceSource);
     onInvalidate();
   }
 
@@ -82,8 +82,8 @@ function projectsFlow({
     onInvalidate();
   }
 
-  function onDeleteAttractor(attractor: Attractor) {
-    deleteThing('attractor', attractor);
+  function onDeleteForceSource(forceSource: ForceSource) {
+    deleteThing('forceSource', forceSource);
     onInvalidate();
   }
 }

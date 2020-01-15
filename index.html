@@ -13,7 +13,7 @@
         <svg width="100vmax" height="90vmin" viewBox="0 0 100 100" id="board">
           <defs></defs>
           <g id="zoom-root">
-            <g id="attractor-root"></g>
+            <g id="forceSource-root"></g>
             <g id="project-root"></g>
           </g>
         </svg>
@@ -23,11 +23,11 @@
       <section id="ui-overlay" class="ui">
         <section class="controls ui editor-container">
           <button id="add-project-button">Add a project</button>
-          <button id="add-attractor-button">Add an attractor</button>
+          <button id="add-forceSource-button">Add an forceSource</button>
           <button id="export-button">Export</button>
           <button id="import-button">Import</button>
           <button id="clear-projects-button">Clear all projects</button>
-          <button id="clear-attractors-button">Clear all attractors</button>
+          <button id="clear-forceSources-button">Clear all forceSources</button>
         </section>
 
         <section class="project-editor prop-editor ui hidden editor-container">
@@ -97,9 +97,9 @@
           <button class="delete-button">Delete project</button>
         </section>
 
-        <section class="attractor-editor prop-editor ui hidden editor-container">
+        <section class="forceSource-editor prop-editor ui hidden editor-container">
           <h2 class="name props-name" contenteditable="true">
-            Attractor name
+            ForceSource name
           </h2>
           <div class="edit-field-tip">
             Hit Ctrl+Enter (or click outside of field) to complete editing. Hit
@@ -162,8 +162,8 @@
               />
             </li>
           </ul>
-          <button class="add-prop-button">Add attractor property</button>
-          <button class="delete-button">Delete attractor</button>
+          <button class="add-prop-button">Add forceSource property</button>
+          <button class="delete-button">Delete forceSource</button>
         </section>
 
         <footer class="ui centered-col">
