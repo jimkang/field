@@ -10,11 +10,14 @@
 
     <section class="overlays-container centered-col">
       <section id="project-container" class="centered-col">
-        <svg width="125vmin" height="125vmin" viewBox="0 0 100 100" id="board">
+        <svg width="100vmax" height="90vmin" viewBox="0 0 100 100" id="board">
           <defs></defs>
-          <g id="attractor-root"></g>
-          <g id="project-root"></g>
+          <g id="zoom-root">
+            <g id="attractor-root"></g>
+            <g id="project-root"></g>
+          </g>
         </svg>
+        <div>You can pan around the board by dragging. You can zoom in and out with either the mouse wheel or pinching.</div>
       </section>
 
       <section id="ui-overlay" class="ui">

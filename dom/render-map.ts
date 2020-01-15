@@ -3,8 +3,16 @@ var d3 = require('d3-selection');
 var accessor = require('accessor');
 var { drag } = require('d3-drag');
 var { forceSimulation, forceCollide } = require('d3-force');
+var { zoom } = require('d3-zoom');
+
+const minIntervalForRestartingSim = 100;
 
 var simulation;
+var boardSel = d3.select('#board');
+var zoomRootSel = d3.select('#zoom-root');
+
+var zoomer = zoom().on('zoom', onZoom);
+boardSel.call(zoomer);
 
 export function renderMap({
   projectData,
@@ -25,8 +33,10 @@ export function renderMap({
   onSelectAttractor: (Attractor) => void;
   onChangeAttractor: (Attractor) => void;
 }) {
+  var posLastUpdatedTime = 0.0;
+
   var applyDragBehavior = drag()
-    .container(d3.select('#board').node())
+    .container(boardSel.node())
     .on('end', onChangeAttractor)
     .on('drag', updateAttractorPosition);
 
@@ -44,7 +54,7 @@ export function renderMap({
     .nodes((projectData as Array<Thing>).concat(attractorData as Array<Thing>))
     .on('tick', renderProjectChits);
   if (simulationNeedsRestart) {
-    restartSimulationInEarnest();
+    restartSimulationInEarnest(minIntervalForRestartingSim + 1);
   }
 
   renderThings(
@@ -62,12 +72,15 @@ export function renderMap({
     attractor.fx += d3.event.dx;
     attractor.fy += d3.event.dy;
     d3.select(this).attr('transform', getTransform(attractor));
-    restartSimulationInEarnest();
+    restartSimulationInEarnest(d3.event.timeStamp);
   }
 
-  function restartSimulationInEarnest() {
-    simulation.alpha(1);
-    simulation.restart();
+  function restartSimulationInEarnest(timeStamp: number) {
+    if (timeStamp - posLastUpdatedTime >= minIntervalForRestartingSim) {
+      posLastUpdatedTime = timeStamp;
+      simulation.alpha(1);
+      simulation.restart();
+    }
   }
 
   function updateProjectChitVelocities(alpha) {
@@ -153,4 +166,8 @@ function getAttraction(attractor: Attractor, project: Project): number {
     }
   }
   return attraction;
+}
+
+function onZoom() {
+  zoomRootSel.attr('transform', d3.event.transform);
 }
