@@ -15,17 +15,21 @@ deploy:
 run:
 	wzrd app.js:index.js -- \
 		-d \
-		$(PLUGIN_SWITCH) 
+		$(PLUGIN_SWITCH)
 
 build:
 	$(BROWSERIFY) $(PLUGIN_SWITCH) app.js | $(UGLIFY) -c -m -o index.js
-	#$(BROWSERIFY) $(PLUGIN_SWITCH) $(TRANSFORM_SWITCH) app.js > index.js
 
 prettier:
 	prettier --single-quote --write "**/*.js"
 	prettier --single-quote --write "**/*.ts"
 
 sync:
-	rsync -a $(HOMEDIR)/ $(USER)@$(SERVER):/$(APPDIR) --exclude node_modules/ \
-		--exclude art/ --exclude/.git --omit-dir-times --no-perms
+	rsync -a $(HOMEDIR)/ $(USER)@$(SERVER):/$(APPDIR) \
+    --exclude node_modules/ \
+		--exclude .git \
+    --omit-dir-times \
+    --no-perms
 
+set-up-server-dir:
+	ssh $(USER)@$(SERVER) "sudo mkdir -p $(APPDIR)"
