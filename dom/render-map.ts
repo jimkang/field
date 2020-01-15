@@ -49,7 +49,7 @@ export function renderMap({
     .force('attractors', updateProjectChitVelocities)
     //.velocityDecay(0)
     //.alphaDecay(0)
-    .force('separation', forceCollide(thingRadius))
+    .force('separation', forceCollide(thingRadius).strength(0.3))
     .alpha(0.1)
     .nodes((projectData as Array<Thing>).concat(attractorData as Array<Thing>))
     .on('tick', renderProjectChits);
