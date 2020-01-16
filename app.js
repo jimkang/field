@@ -5,6 +5,7 @@ var d3 = require('d3-selection');
 import { getAll, clearAll, update } from './store';
 var projectsFlow = require('./flows/projects-flow');
 var { roll } = require('probable');
+var renderDownloadLink = require('render-dl-link');
 
 var randomId = require('@jimkang/randomid')();
 
@@ -30,7 +31,8 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
     onClearForceSourcesClick: createRunner([
       () => clearAll('forceSource'),
       refreshFromStore
-    ])
+    ]),
+    onExportClick
   });
 
   d3.select(document.body).classed('hide-ui', hideUI);
@@ -108,4 +110,20 @@ function createRunner(fns) {
 
 function runFn(fn) {
   fn();
+}
+
+function onExportClick() {
+  var entiretyOfField = {
+    projects: getAll('project'),
+    forceSources: getAll('forceSource')
+  };
+  renderDownloadLink({
+    blob: new Blob([JSON.stringify(entiretyOfField, null, 2)], {
+      type: 'application/json'
+    }),
+    parentSelector: '#downloads',
+    downloadLinkText: 'Download this field (JSON)',
+    filename: 'personal-forces-field.json'
+  });
+  document.getElementById('downloads').classList.remove('hidden');
 }
