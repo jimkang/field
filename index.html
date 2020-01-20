@@ -17,7 +17,10 @@
             <g id="project-root"></g>
           </g>
         </svg>
-        <div>You can pan around the board by dragging. You can zoom in and out with either the mouse wheel or pinching.</div>
+        <div>
+          You can pan around the board by dragging. You can zoom in and out with
+          either the mouse wheel or pinching.
+        </div>
       </section>
 
       <section id="ui-overlay" class="ui">
@@ -26,6 +29,12 @@
           <button id="add-forceSource-button">Add an forceSource</button>
           <button id="export-button">Export</button>
           <button id="import-button">Import</button>
+          <input
+            type="file"
+            id="import-file"
+            accept="application/json"
+            class="hidden"
+          />
           <button id="clear-projects-button">Clear all projects</button>
           <button id="clear-forceSources-button">Clear all forceSources</button>
         </section>
@@ -97,7 +106,9 @@
           <button class="delete-button">Delete project</button>
         </section>
 
-        <section class="forceSource-editor prop-editor ui hidden editor-container">
+        <section
+          class="forceSource-editor prop-editor ui hidden editor-container"
+        >
           <h2 class="name props-name" contenteditable="true">
             ForceSource name
           </h2>

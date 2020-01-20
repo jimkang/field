@@ -1,5 +1,7 @@
 import { Project, ForceSource, ThingType, Thing } from './types';
 
+var curry = require('lodash.curry');
+
 // Singleton.
 
 // Load from localStorage when the module is loaded.
@@ -38,6 +40,11 @@ function update(thingType: ThingType, thing: Project | ForceSource) {
   saveAll(thingType);
 }
 
+function updateAll(thingType: ThingType, things: Array<Project | ForceSource>) {
+  things.forEach(curry(update)(thingType));
+  saveAll(thingType);
+}
+
 function saveAll(thingType: ThingType) {
   localStorage[`${thingType}s`] = JSON.stringify(dictsForTypes[thingType]);
 }
@@ -72,6 +79,7 @@ function inflateDateValue(value: string | Date): Date {
 
 module.exports = {
   update,
+  updateAll,
   saveAll,
   deleteThing,
   clearAll,

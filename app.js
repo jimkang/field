@@ -2,7 +2,7 @@ var handleError = require('handle-error-web');
 var RouteState = require('route-state');
 var wireMainControls = require('./dom/wire-main-controls');
 var d3 = require('d3-selection');
-import { getAll, clearAll, update } from './store';
+import { getAll, clearAll, update, updateAll } from './store';
 var projectsFlow = require('./flows/projects-flow');
 var { roll } = require('probable');
 var renderDownloadLink = require('render-dl-link');
@@ -32,7 +32,8 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
       () => clearAll('forceSource'),
       refreshFromStore
     ]),
-    onExportClick
+    onExportClick,
+    onImportFile
   });
 
   d3.select(document.body).classed('hide-ui', hideUI);
@@ -94,6 +95,30 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
   function onSelectForceSource({ forceSourceId }) {
     routeState.addToRoute({ selAttr: forceSourceId });
   }
+
+  function onExportClick() {
+    var entiretyOfField = {
+      projects: getAll('project'),
+      forceSources: getAll('forceSource')
+    };
+    renderDownloadLink({
+      blob: new Blob([JSON.stringify(entiretyOfField, null, 2)], {
+        type: 'application/json'
+      }),
+      parentSelector: '#downloads',
+      downloadLinkText: 'Download this field (JSON)',
+      filename: 'personal-forces-field.json'
+    });
+    document.getElementById('downloads').classList.remove('hidden');
+  }
+
+  function onImportFile({ forceSources, projects }) {
+    clearAll('forceSource');
+    clearAll('project');
+    updateAll('forceSource', forceSources);
+    updateAll('project', projects);
+    refreshFromStore();
+  }
 }
 
 function reportTopLevelError(msg, url, lineNo, columnNo, error) {
@@ -110,20 +135,4 @@ function createRunner(fns) {
 
 function runFn(fn) {
   fn();
-}
-
-function onExportClick() {
-  var entiretyOfField = {
-    projects: getAll('project'),
-    forceSources: getAll('forceSource')
-  };
-  renderDownloadLink({
-    blob: new Blob([JSON.stringify(entiretyOfField, null, 2)], {
-      type: 'application/json'
-    }),
-    parentSelector: '#downloads',
-    downloadLinkText: 'Download this field (JSON)',
-    filename: 'personal-forces-field.json'
-  });
-  document.getElementById('downloads').classList.remove('hidden');
 }
