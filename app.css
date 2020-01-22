@@ -256,6 +256,24 @@ footer {
   color: white;
 }
 
+#find-and-replace-container {
+  border: 1px dashed #222;
+  border-radius: 0.5em;
+  padding: 0.5em;
+}
+
+#find-and-replace-container.hidden {
+  display: none;
+}
+
+#find-and-replace-container input {
+  margin-bottom: 0.5em;
+}
+
+#replace-button {
+  margin-bottom: 0;
+}
+
 @media all and (max-height: 568px) {
   body {
     font-size: 18px;
