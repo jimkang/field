@@ -6,6 +6,7 @@ import { getAll, clearAll, update, updateAll } from './store';
 var projectsFlow = require('./flows/projects-flow');
 var { roll } = require('probable');
 var renderDownloadLink = require('render-dl-link');
+var curry = require('lodash.curry');
 
 var randomId = require('@jimkang/randomid')();
 
@@ -122,7 +123,29 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
   }
 
   function onFindAndReplace({ findText, replaceText }) {
+    var projects = getAll('project');
+    var forceSources = getAll('forceSource');
+    projects.forEach(
+      curry(findAndReplaceAttributeInThing)(findText, replaceText)
+    );
+    forceSources.forEach(
+      curry(findAndReplaceAttributeInThing)(findText, replaceText)
+    );
+    updateAll('forceSource', forceSources);
+    updateAll('project', projects);
     refreshFromStore();
+  }
+}
+
+function findAndReplaceAttributeInThing(findText, replaceText, thing) {
+  thing.numberProps.forEach(
+    curry(findAndReplaceNumberPropName)(findText, replaceText)
+  );
+}
+
+function findAndReplaceNumberPropName(findText, replaceText, numberProp) {
+  if (numberProp.name === findText) {
+    numberProp.name = replaceText;
   }
 }
 
