@@ -6,7 +6,9 @@ var { forceSimulation, forceCollide } = require('d3-force');
 var { zoom } = require('d3-zoom');
 
 const minIntervalForRestartingSim = 100;
+const alphaTolerance = 0.0001;
 
+var animationReqId;
 var simulation;
 var boardSel = d3.select('#board');
 var zoomRootSel = d3.select('#zoom-root');
@@ -51,11 +53,16 @@ export function renderMap({
     //.alphaDecay(0)
     .force('separation', forceCollide(thingRadius).strength(0.3))
     .alpha(0.1)
-    .nodes((projectData as Array<Thing>).concat(forceSourceData as Array<Thing>))
-    .on('tick', renderProjectChits);
+    .nodes(
+      (projectData as Array<Thing>).concat(forceSourceData as Array<Thing>)
+    )
+    .stop();
+  //.on('tick', renderProjectChits);
   if (simulationNeedsRestart) {
-    restartSimulationInEarnest(minIntervalForRestartingSim + 1);
+    restartSim(minIntervalForRestartingSim + 1);
   }
+
+  scheduleTick();
 
   renderThings(
     forceSourceData,
@@ -63,6 +70,23 @@ export function renderMap({
     onSelectForceSource,
     selectedForceSource
   ).call(applyDragBehavior);
+
+  function scheduleTick() {
+    if (animationReqId) {
+      window.cancelAnimationFrame(animationReqId);
+    }
+    animationReqId = window.requestAnimationFrame(tick);
+  }
+
+  function tick() {
+    simulation.tick();
+    renderProjectChits();
+    if (
+      Math.abs(simulation.alpha() - simulation.alphaTarget()) > alphaTolerance
+    ) {
+      scheduleTick();
+    }
+  }
 
   function renderProjectChits() {
     renderThings(projectData, 'project', onSelectProject, selectedProject);
@@ -72,14 +96,18 @@ export function renderMap({
     forceSource.fx += d3.event.dx;
     forceSource.fy += d3.event.dy;
     d3.select(this).attr('transform', getTransform(forceSource));
-    restartSimulationInEarnest(d3.event.timeStamp);
+    // restartSim will cause renderProjectChits to get called down
+    // the line, but it's really important to call it directly so
+    // that the drag looks responsive.
+    renderProjectChits();
+    restartSim(d3.event.timeStamp);
   }
 
-  function restartSimulationInEarnest(timeStamp: number) {
+  function restartSim(timeStamp: number) {
     if (timeStamp - posLastUpdatedTime >= minIntervalForRestartingSim) {
       posLastUpdatedTime = timeStamp;
       simulation.alpha(1);
-      simulation.restart();
+      scheduleTick();
     }
   }
 
