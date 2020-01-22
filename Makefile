@@ -19,6 +19,7 @@ run:
 
 build:
 	$(BROWSERIFY) $(PLUGIN_SWITCH) app.js | $(UGLIFY) -c -m -o index.js
+	$(BROWSERIFY) $(PLUGIN_SWITCH) dom/simulation-worker-src.js | $(UGLIFY) -c -m -o simulation-worker.js
 
 prettier:
 	prettier --single-quote --write "**/*.js"

@@ -1,18 +1,18 @@
-import { Project, ForceSource, Thing, NumberProp } from '../types';
+import { Project, ForceSource, Thing } from '../types';
 var d3 = require('d3-selection');
 var accessor = require('accessor');
 var { drag } = require('d3-drag');
-var { forceSimulation, forceCollide } = require('d3-force');
 var { zoom } = require('d3-zoom');
+var getAtPath = require('get-at-path');
 
-const minIntervalForRestartingSim = 100;
-
-var simulation;
+var simulationWorker = new Worker('simulation-worker.js');
 var boardSel = d3.select('#board');
 var zoomRootSel = d3.select('#zoom-root');
 
 var zoomer = zoom().on('zoom', onZoom);
 boardSel.call(zoomer);
+
+var animationRequestId;
 
 export function renderMap({
   projectData,
@@ -33,29 +33,13 @@ export function renderMap({
   onSelectForceSource: (ForceSource) => void;
   onChangeForceSource: (ForceSource) => void;
 }) {
-  var posLastUpdatedTime = 0.0;
-
   var applyDragBehavior = drag()
     .container(boardSel.node())
     .on('end', onChangeForceSource)
     .on('drag', updateForceSourcePosition);
 
-  var simulationNeedsRestart = true;
-  if (!simulation) {
-    simulation = forceSimulation();
-    simulationNeedsRestart = false;
-  }
-  simulation
-    .force('forceSources', updateProjectChitVelocities)
-    //.velocityDecay(0)
-    //.alphaDecay(0)
-    .force('separation', forceCollide(thingRadius).strength(0.3))
-    .alpha(0.1)
-    .nodes((projectData as Array<Thing>).concat(forceSourceData as Array<Thing>))
-    .on('tick', renderProjectChits);
-  if (simulationNeedsRestart) {
-    restartSimulationInEarnest(minIntervalForRestartingSim + 1);
-  }
+  simulationWorker.postMessage({ projectData, forceSourceData, thingRadius });
+  simulationWorker.onmessage = onWorkerMessage;
 
   renderThings(
     forceSourceData,
@@ -63,6 +47,19 @@ export function renderMap({
     onSelectForceSource,
     selectedForceSource
   ).call(applyDragBehavior);
+
+  function onWorkerMessage(e) {
+    const simEvent = getAtPath(e, ['data', 'simEvent']);
+    if (simEvent === 'tick') {
+      if (e.data.projectData) {
+        projectData = e.data.projectData;
+      }
+      if (animationRequestId) {
+        window.cancelAnimationFrame(animationRequestId);
+      }
+      animationRequestId = window.requestAnimationFrame(renderProjectChits);
+    }
+  }
 
   function renderProjectChits() {
     renderThings(projectData, 'project', onSelectProject, selectedProject);
@@ -72,30 +69,15 @@ export function renderMap({
     forceSource.fx += d3.event.dx;
     forceSource.fy += d3.event.dy;
     d3.select(this).attr('transform', getTransform(forceSource));
-    restartSimulationInEarnest(d3.event.timeStamp);
-  }
+    renderProjectChits();
 
-  function restartSimulationInEarnest(timeStamp: number) {
-    if (timeStamp - posLastUpdatedTime >= minIntervalForRestartingSim) {
-      posLastUpdatedTime = timeStamp;
-      simulation.alpha(1);
-      simulation.restart();
-    }
-  }
-
-  function updateProjectChitVelocities(alpha) {
-    var projects = projectData;
-    for (var i = 0, n = projects.length, project, k = alpha; i < n; ++i) {
-      project = projects[i];
-      for (let j = 0; j < forceSourceData.length; ++j) {
-        let forceSource = forceSourceData[j];
-        const attraction = getAttraction(forceSource, project);
-        const xDiff = forceSource.x - project.x;
-        const yDiff = forceSource.y - project.y;
-        project.vx += xDiff * k * attraction;
-        project.vy += yDiff * k * attraction;
-      }
-    }
+    simulationWorker.postMessage({
+      projectData,
+      forceSourceData,
+      thingRadius,
+      restartSimulationInEarnest: true,
+      restartTimeStamp: d3.event.timeStamp
+    });
   }
 
   function renderThings(
@@ -158,20 +140,6 @@ export function renderMap({
 
 function getTransform(thing: Thing) {
   return `translate(${thing.x}, ${thing.y})`;
-}
-
-function getAttraction(forceSource: ForceSource, project: Project): number {
-  var attraction = 0.0;
-  for (var i = 0; i < forceSource.numberProps.length; ++i) {
-    let forceSourceProp: NumberProp = forceSource.numberProps[i];
-    for (let j = 0; j < project.numberProps.length; ++j) {
-      let projectProp: NumberProp = project.numberProps[j];
-      if (projectProp.name === forceSourceProp.name) {
-        attraction += 1.0 - Math.abs(projectProp.value - forceSourceProp.value);
-      }
-    }
-  }
-  return attraction;
 }
 
 function onZoom() {
