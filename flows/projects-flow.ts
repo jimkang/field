@@ -12,7 +12,9 @@ function projectsFlow({
   selectedForceSourceId,
   onSelectProject,
   onSelectForceSource,
-  onInvalidate
+  onInvalidate,
+  showProjectEditor,
+  showForceSourceEditor
 }: {
   projectData: Array<Project>;
   forceSourceData: Array<ForceSource>;
@@ -21,6 +23,8 @@ function projectsFlow({
   onSelectProject: (string) => void;
   onSelectForceSource: (string) => void;
   onInvalidate: () => void;
+  showProjectEditor: boolean;
+  showForceSourceEditor: boolean;
 }) {
   var selectedProject = projectData.find(
     curry(idIsSelected)(selectedProjectId)
@@ -34,14 +38,16 @@ function projectsFlow({
     thingType: ThingType.project,
     onChange: onChangeProject,
     onAddProp,
-    onDeleteThing: onDeleteProject
+    onDeleteThing: onDeleteProject,
+    visible: showProjectEditor
   });
   renderEditor({
     thing: selectedForceSource,
     thingType: ThingType.forceSource,
     onChange: onChangeForceSource,
     onAddProp,
-    onDeleteThing: onDeleteForceSource
+    onDeleteThing: onDeleteForceSource,
+    visible: showForceSourceEditor
   });
 
   renderMap({

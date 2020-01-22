@@ -111,10 +111,9 @@ button {
   position: absolute;
   display: flex;
   flex-direction: column;
-  width: 25%;
-  /*! min-width: 20em; */
   align-items: end;
   align-self: end;
+  pointer-events: none;
 }
 
 #ui-overlay > * {
@@ -228,7 +227,7 @@ footer {
   display: initial;
 }
 
-.overlays-container: {
+.overlays-container {
   position: relative;
 }
 
@@ -256,22 +255,47 @@ footer {
   color: white;
 }
 
-#find-and-replace-container {
-  border: 1px dashed #222;
-  border-radius: 0.5em;
-  padding: 0.5em;
+#top-level-toggles-container {
+  display: flex;
+  width: 100%;
+  padding: 0;
 }
 
-#find-and-replace-container.hidden {
-  display: none;
+.top-level-toggle {
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-#find-and-replace-container input {
-  margin-bottom: 0.5em;
-}
-
-#replace-button {
+.top-level-toggle .display-area {
+  width: 22px;
+  height: 22px;
   margin-bottom: 0;
+}
+
+#toggle-field-controls .display-area {
+  border: 4px solid black;
+}
+
+#toggle-forceSource-controls .display-area {
+  border-radius: 50%;
+  background-color: black;
+  width: 26px;
+  height: 26px;
+}
+
+#toggle-project-controls {
+  margin-left: 1px;
+}
+
+#toggle-project-controls .display-area {
+  border-radius: 50%;
+  border: 2px solid black;
+  width: 22px;
+  height: 22px;
 }
 
 @media all and (max-height: 568px) {

@@ -24,9 +24,14 @@
       </section>
 
       <section id="ui-overlay" class="ui">
-        <section class="controls ui editor-container">
+        <section class="controls ui" id="top-level-toggles-container">
+          <div id="toggle-forceSource-controls" class="top-level-toggle"><div class="display-area"></div></div>
+          <div id="toggle-field-controls" class="top-level-toggle"><div class="display-area"></div></div>
+          <div id="toggle-project-controls" class="top-level-toggle"><div class="display-area"></div></div>
+        </section>
+        <section class="controls ui editor-container hidden">
           <button id="add-project-button">Add a project</button>
-          <button id="add-forceSource-button">Add an forceSource</button>
+          <button id="add-forceSource-button">Add a force source</button>
           <button id="export-button">Export</button>
           <button id="import-button">Import</button>
           <input
@@ -46,7 +51,7 @@
             </div>
           </form>
           <button id="clear-projects-button">Clear all projects</button>
-          <button id="clear-forceSources-button">Clear all forceSources</button>
+          <button id="clear-forceSources-button">Clear all force sources</button>
         </section>
 
         <section class="project-editor prop-editor ui hidden editor-container">
@@ -183,8 +188,8 @@
               />
             </li>
           </ul>
-          <button class="add-prop-button">Add forceSource property</button>
-          <button class="delete-button">Delete forceSource</button>
+          <button class="add-prop-button">Add force source property</button>
+          <button class="delete-button">Delete force source</button>
         </section>
 
         <footer class="ui centered-col">

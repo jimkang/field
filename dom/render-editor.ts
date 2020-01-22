@@ -9,17 +9,19 @@ export function renderEditor({
   thingType,
   onChange,
   onAddProp,
-  onDeleteThing
+  onDeleteThing,
+  visible
 }: {
   thing: Thing;
   thingType: ThingType;
   onChange: (Thing) => void;
   onAddProp: (Thing) => void;
   onDeleteThing: (Thing) => void;
+  visible: boolean;
 }) {
   var editor = d3.select(`.${thingType}-editor`);
-  editor.classed('hidden', !thing);
-  d3.select(`.${thingType}-editor`).classed('hidden', !thing);
+  editor.classed('hidden', visible);
+  d3.select(`.${thingType}-editor`).classed('hidden', !visible);
   if (!thing) {
     return;
   }
