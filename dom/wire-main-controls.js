@@ -3,6 +3,9 @@ var { on } = OLPE();
 var handleError = require('handle-error-web');
 
 var filePicker = document.getElementById('import-file');
+var findAndReplaceContainer = document.getElementById(
+  'find-and-replace-container'
+);
 
 function wireMainControls({
   onAddProjectClick,
@@ -17,12 +20,9 @@ function wireMainControls({
   on('#add-forceSource-button', 'click', onAddForceSourceClick);
   on('#clear-forceSources-button', 'click', onClearForceSourcesClick);
   on('#export-button', 'click', onExportClick);
-  on('#import-button', 'click', revealFilePicker);
   on('#import-file', 'change', onImportFileChange);
-
-  function revealFilePicker() {
-    filePicker.classList.remove('hidden');
-  }
+  wireReveal('#import-button', filePicker);
+  wireReveal('#show-replace-button', findAndReplaceContainer);
 
   function onImportFileChange() {
     var file = this.files[0];
@@ -50,6 +50,14 @@ function wireMainControls({
       filePicker.classList.add('hidden');
       onImportFile(parsed);
     }
+  }
+}
+
+function wireReveal(revealButtonSelector, elementToReveal) {
+  on(revealButtonSelector, 'click', revealElement);
+
+  function revealElement() {
+    elementToReveal.classList.remove('hidden');
   }
 }
 
