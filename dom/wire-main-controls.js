@@ -61,6 +61,7 @@ function wireMainControls({
     var replaceText = replaceField.value;
     if (findText && replaceText) {
       onFindAndReplace({ findText, replaceText });
+      findAndReplaceContainer.classList.add('hidden');
     }
   }
 }
