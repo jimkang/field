@@ -33,7 +33,8 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
       refreshFromStore
     ]),
     onExportClick,
-    onImportFile
+    onImportFile,
+    onFindAndReplace
   });
 
   d3.select(document.body).classed('hide-ui', hideUI);
@@ -117,6 +118,10 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
     clearAll('project');
     updateAll('forceSource', forceSources);
     updateAll('project', projects);
+    refreshFromStore();
+  }
+
+  function onFindAndReplace({ findText, replaceText }) {
     refreshFromStore();
   }
 }

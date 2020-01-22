@@ -6,6 +6,8 @@ var filePicker = document.getElementById('import-file');
 var findAndReplaceContainer = document.getElementById(
   'find-and-replace-container'
 );
+var findField = document.getElementById('find-field');
+var replaceField = document.getElementById('replace-field');
 
 function wireMainControls({
   onAddProjectClick,
@@ -13,7 +15,8 @@ function wireMainControls({
   onAddForceSourceClick,
   onClearForceSourcesClick,
   onExportClick,
-  onImportFile
+  onImportFile,
+  onFindAndReplace
 }) {
   on('#add-project-button', 'click', onAddProjectClick);
   on('#clear-projects-button', 'click', onClearProjectsClick);
@@ -21,6 +24,7 @@ function wireMainControls({
   on('#clear-forceSources-button', 'click', onClearForceSourcesClick);
   on('#export-button', 'click', onExportClick);
   on('#import-file', 'change', onImportFileChange);
+  on('#replace-button', 'click', onReplaceClick);
   wireReveal('#import-button', filePicker);
   wireReveal('#show-replace-button', findAndReplaceContainer);
 
@@ -49,6 +53,14 @@ function wireMainControls({
     if (parsed) {
       filePicker.classList.add('hidden');
       onImportFile(parsed);
+    }
+  }
+
+  function onReplaceClick() {
+    var findText = findField.value;
+    var replaceText = replaceField.value;
+    if (findText && replaceText) {
+      onFindAndReplace({ findText, replaceText });
     }
   }
 }

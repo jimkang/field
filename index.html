@@ -37,11 +37,13 @@
           />
           <button id="show-replace-button">Find and replace attribute</button>
           <div id="find-and-replace-container" class="centered-col hidden">
-            <label class="prop-label">Find attributes named:</label>
-            <input type="text" id="find-field" />
-            <label class="prop-label">Replace with:</label>
-            <input type="text" id="replace-field" />
-            <button id="replace-button">Replace all</button>
+            <form>
+              <label class="prop-label">Find attributes named:</label>
+              <input type="text" id="find-field" required="required" />
+              <label class="prop-label">Replace with:</label>
+              <input type="text" id="replace-field" required="required" />
+              <input type="submit" id="replace-button" value="Replace all" />
+            </form>
           </div>
           <button id="clear-projects-button">Clear all projects</button>
           <button id="clear-forceSources-button">Clear all forceSources</button>
