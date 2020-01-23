@@ -7,6 +7,7 @@ var projectsFlow = require('./flows/projects-flow');
 var { roll } = require('probable');
 var renderDownloadLink = require('render-dl-link');
 var curry = require('lodash.curry');
+var renderTopLevelToggles = require('./dom/render-top-level-toggles');
 
 var randomId = require('@jimkang/randomid')();
 
@@ -40,6 +41,7 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
 
   d3.select(document.body).classed('hide-ui', hideUI);
   d3.select(document.body).classed('debug', debug);
+  renderTopLevelToggles();
 
   refreshFromStore();
 

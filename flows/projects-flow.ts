@@ -12,9 +12,7 @@ function projectsFlow({
   selectedForceSourceId,
   onSelectProject,
   onSelectForceSource,
-  onInvalidate,
-  showProjectEditor,
-  showForceSourceEditor
+  onInvalidate
 }: {
   projectData: Array<Project>;
   forceSourceData: Array<ForceSource>;
@@ -38,16 +36,14 @@ function projectsFlow({
     thingType: ThingType.project,
     onChange: onChangeProject,
     onAddProp,
-    onDeleteThing: onDeleteProject,
-    visible: showProjectEditor
+    onDeleteThing: onDeleteProject
   });
   renderEditor({
     thing: selectedForceSource,
     thingType: ThingType.forceSource,
     onChange: onChangeForceSource,
     onAddProp,
-    onDeleteThing: onDeleteForceSource,
-    visible: showForceSourceEditor
+    onDeleteThing: onDeleteForceSource
   });
 
   renderMap({

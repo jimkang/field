@@ -4,35 +4,33 @@ var d3 = require('d3-selection');
 import { renderProps } from './render-props';
 var wireContentEditable = require('./wire-contenteditable');
 
+// Whether or not an editor's container is visible or
+// not is handled in renderTopLevelToggles, not here.
 export function renderEditor({
   thing,
   thingType,
   onChange,
   onAddProp,
-  onDeleteThing,
-  visible
+  onDeleteThing
 }: {
   thing: Thing;
   thingType: ThingType;
   onChange: (Thing) => void;
   onAddProp: (Thing) => void;
   onDeleteThing: (Thing) => void;
-  visible: boolean;
 }) {
-  var editor = d3.select(`.${thingType}-editor`);
-  editor.classed('hidden', visible);
-  d3.select(`.${thingType}-editor`).classed('hidden', !visible);
   if (!thing) {
     return;
   }
 
   wireContentEditable({
-    editableSelection: d3.select(`.${thingType}-editor .name`),
+    editableSelection: d3.select(`#${thingType}-sheet .name`),
     initialValue: thing.name,
     onContentChanged: onNameChanged
   });
 
   renderProps(thing, thingType, onChange);
+  var editor = d3.select(`.${thingType}-editor`);
   editor.select('.add-prop-button').on('click', onAddPropClick);
   editor.select('.delete-button').on('click', onDeleteClick);
 

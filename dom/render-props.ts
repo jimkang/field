@@ -8,7 +8,7 @@ export function renderProps(
   thingType: string,
   onChange: (Thing) => void
 ) {
-  var editor = d3.select(`.${thingType}-editor`);
+  var editor = d3.select(`#${thingType}-sheet`);
   var propsRoot = editor.select('.props');
   var allProps = propsRoot
     .selectAll('.prop')

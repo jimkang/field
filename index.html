@@ -25,11 +25,29 @@
 
       <section id="ui-overlay" class="ui">
         <section class="controls ui" id="top-level-toggles-container">
-          <div id="toggle-forceSource-controls" class="top-level-toggle"><div class="display-area"></div></div>
-          <div id="toggle-field-controls" class="top-level-toggle"><div class="display-area"></div></div>
-          <div id="toggle-project-controls" class="top-level-toggle"><div class="display-area"></div></div>
+          <div
+            id="toggle-forceSource-controls"
+            class="top-level-toggle"
+            data-sheet="forceSource-sheet"
+          >
+            <div class="display-area"></div>
+          </div>
+          <div
+            id="toggle-field-controls"
+            class="top-level-toggle"
+            data-sheet="field-sheet"
+          >
+            <div class="display-area"></div>
+          </div>
+          <div
+            id="toggle-project-controls"
+            class="top-level-toggle"
+            data-sheet="project-sheet"
+          >
+            <div class="display-area"></div>
+          </div>
         </section>
-        <section class="controls ui editor-container hidden">
+        <section id="field-sheet" class="controls ui editor-container">
           <button id="add-project-button">Add a project</button>
           <button id="add-forceSource-button">Add a force source</button>
           <button id="export-button">Export</button>
@@ -51,10 +69,15 @@
             </div>
           </form>
           <button id="clear-projects-button">Clear all projects</button>
-          <button id="clear-forceSources-button">Clear all force sources</button>
+          <button id="clear-forceSources-button">
+            Clear all force sources
+          </button>
         </section>
 
-        <section class="project-editor prop-editor ui hidden editor-container">
+        <section
+          id="project-sheet"
+          class="prop-editor ui editor-container"
+        >
           <h2 class="name sheet-name" contenteditable="true">Slop Cube</h2>
           <div class="edit-field-tip">
             Hit Ctrl+Enter (or click outside of field) to complete editing. Hit
@@ -122,7 +145,8 @@
         </section>
 
         <section
-          class="forceSource-editor prop-editor ui hidden editor-container"
+          id="forceSource-sheet"
+          class="prop-editor ui editor-container"
         >
           <h2 class="name props-name" contenteditable="true">
             ForceSource name
