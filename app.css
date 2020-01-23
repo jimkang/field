@@ -92,6 +92,10 @@ button {
   pointer-events: initial;
 }
 
+input {
+  pointer-events: initial;
+}
+
 .click-target {
   cursor: pointer;
   fill: transparent;
