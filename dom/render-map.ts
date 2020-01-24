@@ -49,15 +49,13 @@ export function renderMap({
   }
   simulation
     .force('forceSources', updateProjectChitVelocities)
-    //.velocityDecay(0)
-    //.alphaDecay(0)
     .force('separation', forceCollide(thingRadius).strength(0.3))
     .alpha(0.1)
     .nodes(
       (projectData as Array<Thing>).concat(forceSourceData as Array<Thing>)
     )
     .stop();
-  //.on('tick', renderProjectChits);
+
   if (simulationNeedsRestart) {
     restartSim(minIntervalForRestartingSim + 1);
   }
@@ -72,7 +70,13 @@ export function renderMap({
     true
   ).call(applyDragBehavior);
 
-  renderProjectChits(true);
+  var projectChitSel = renderThings(
+    projectData,
+    'project',
+    onSelectProject,
+    selectedProject,
+    true
+  );
 
   function scheduleTick() {
     if (animationReqId) {
@@ -83,7 +87,7 @@ export function renderMap({
 
   function tick() {
     simulation.tick();
-    renderProjectChits(false);
+    renderProjectChitPositions(projectChitSel);
     if (
       Math.abs(simulation.alpha() - simulation.alphaTarget()) > alphaTolerance
     ) {
@@ -91,24 +95,14 @@ export function renderMap({
     }
   }
 
-  function renderProjectChits(shouldUpdateText: boolean) {
-    renderThings(
-      projectData,
-      'project',
-      onSelectProject,
-      selectedProject,
-      shouldUpdateText
-    );
-  }
-
   function updateForceSourcePosition(forceSource) {
     forceSource.fx += d3.event.dx;
     forceSource.fy += d3.event.dy;
     d3.select(this).attr('transform', getTransform(forceSource));
-    // restartSim will cause renderProjectChits to get called down
+    // restartSim will cause renderProjectChitPositions to get called down
     // the line, but it's really important to call it directly so
     // that the drag looks responsive.
-    renderProjectChits(false);
+    renderProjectChitPositions(projectChitSel);
     restartSim(d3.event.timeStamp);
   }
 
@@ -175,7 +169,7 @@ export function renderMap({
     if (shouldUpdateText) {
       currentThings.select('.name').text(accessor('name'));
     }
-    currentThings.attr('transform', getTransform);
+    renderProjectChitPositions(currentThings);
     currentThings.classed('selected', isSelected);
 
     return currentThings;
@@ -212,6 +206,10 @@ function getAttraction(forceSource: ForceSource, project: Project): number {
     }
   }
   return attraction;
+}
+
+function renderProjectChitPositions(projectChitSel) {
+  projectChitSel.attr('transform', getTransform);
 }
 
 function onZoom() {
