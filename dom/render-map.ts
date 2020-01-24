@@ -68,8 +68,11 @@ export function renderMap({
     forceSourceData,
     'forceSource',
     onSelectForceSource,
-    selectedForceSource
+    selectedForceSource,
+    true
   ).call(applyDragBehavior);
+
+  renderProjectChits(true);
 
   function scheduleTick() {
     if (animationReqId) {
@@ -80,7 +83,7 @@ export function renderMap({
 
   function tick() {
     simulation.tick();
-    renderProjectChits();
+    renderProjectChits(false);
     if (
       Math.abs(simulation.alpha() - simulation.alphaTarget()) > alphaTolerance
     ) {
@@ -88,8 +91,14 @@ export function renderMap({
     }
   }
 
-  function renderProjectChits() {
-    renderThings(projectData, 'project', onSelectProject, selectedProject);
+  function renderProjectChits(shouldUpdateText: boolean) {
+    renderThings(
+      projectData,
+      'project',
+      onSelectProject,
+      selectedProject,
+      shouldUpdateText
+    );
   }
 
   function updateForceSourcePosition(forceSource) {
@@ -99,7 +108,7 @@ export function renderMap({
     // restartSim will cause renderProjectChits to get called down
     // the line, but it's really important to call it directly so
     // that the drag looks responsive.
-    renderProjectChits();
+    renderProjectChits(false);
     restartSim(d3.event.timeStamp);
   }
 
@@ -130,7 +139,8 @@ export function renderMap({
     thingData: Array<Thing>,
     className: string,
     onSelectThing: (Thing) => void,
-    selectedThing: Thing
+    selectedThing: Thing,
+    shouldUpdateText: boolean
   ) {
     var thingRoot = d3.select(`#${className}-root`);
     var things = thingRoot
@@ -162,7 +172,9 @@ export function renderMap({
       .classed('name', true);
 
     var currentThings = newThings.merge(things);
-    currentThings.select('.name').text(accessor('name'));
+    if (shouldUpdateText) {
+      currentThings.select('.name').text(accessor('name'));
+    }
     currentThings.attr('transform', getTransform);
     currentThings.classed('selected', isSelected);
 
