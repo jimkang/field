@@ -190,30 +190,30 @@ footer {
   font-size: 1.5;
 }
 
-#board .chit {
+.chit {
   cursor: pointer;
 }
 
-#board .chit circle {
+.chit {
   fill: #fff;
   stroke: #444;
   stroke-width: 0.1;
 }
 
-#board .chit.forceSource circle {
+.chit.forceSource {
   fill: #000;
 }
 
-#board .chit.selected circle {
+.chit.selected {
   stroke-width: 0.2;
 }
 
-#board .chit text {
-  text-anchor: middle;
+.label.forceSource-label .name {
+  color: #fff;
 }
 
-#board .chit.forceSource text {
-  fill: #fff;
+.label {
+  pointer-events: none;
 }
 
 .centered-col {

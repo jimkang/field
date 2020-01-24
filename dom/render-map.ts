@@ -4,6 +4,7 @@ var accessor = require('accessor');
 var { drag } = require('d3-drag');
 var { forceSimulation, forceCollide } = require('d3-force');
 var { zoom } = require('d3-zoom');
+var curry = require('lodash.curry');
 
 const minIntervalForRestartingSim = 100;
 const alphaTolerance = 0.0001;
@@ -64,12 +65,15 @@ export function renderMap({
 
   scheduleTick();
 
-  renderThings(
+  renderThingsWithLabels(
     forceSourceData,
     'forceSource',
     onSelectForceSource,
-    selectedForceSource
+    selectedForceSource,
+    true
   ).call(applyDragBehavior);
+
+  renderProjectChits(true);
 
   function scheduleTick() {
     if (animationReqId) {
@@ -88,18 +92,29 @@ export function renderMap({
     }
   }
 
-  function renderProjectChits() {
-    renderThings(projectData, 'project', onSelectProject, selectedProject);
+  function renderProjectChits(shouldUpdateText = false) {
+    renderThingsWithLabels(
+      projectData,
+      'project',
+      onSelectProject,
+      selectedProject,
+      shouldUpdateText
+    );
   }
 
-  function updateForceSourcePosition(forceSource) {
+  function updateForceSourcePosition(forceSource: ForceSource) {
     forceSource.fx += d3.event.dx;
     forceSource.fy += d3.event.dy;
-    d3.select(this).attr('transform', getTransform(forceSource));
+    this.setAttribute('cx', forceSource.x);
+    this.setAttribute('cy', forceSource.y);
+    var labelSel = d3.select(`#label-${forceSource.id}`);
+    labelSel
+      .attr('x', offsetXByNegativeRadius(forceSource))
+      .attr('y', offsetYByNegativeRadius(forceSource));
+
     // restartSim will cause renderProjectChits to get called down
-    // the line, but it's really important to call it directly so
-    // that the drag looks responsive.
-    renderProjectChits();
+    // the line, but it's really important to update the dragged elements'
+    // positions directly sothat the drag looks responsive.
     restartSim(d3.event.timeStamp);
   }
 
@@ -126,6 +141,23 @@ export function renderMap({
     }
   }
 
+  function renderThingsWithLabels(
+    thingData: Array<Thing>,
+    className: string,
+    onSelectThing: (Thing) => void,
+    selectedThing: Thing,
+    shouldUpdateText: boolean
+  ) {
+    var thingsSelection = renderThings(
+      thingData,
+      className,
+      onSelectThing,
+      selectedThing
+    );
+    renderLabels(thingData, className + '-label', shouldUpdateText);
+    return thingsSelection;
+  }
+
   function renderThings(
     thingData: Array<Thing>,
     className: string,
@@ -139,20 +171,39 @@ export function renderMap({
     things.exit().remove();
     var newThings = things
       .enter()
-      .append('g')
+      .append('circle')
       .classed(className, true)
       .classed('chit', true)
-      .on('click', onClickThing);
-
-    newThings
-      .append('circle')
       .attr('r', thingRadius)
-      .attr('cx', thingRadius)
-      .attr('cy', thingRadius);
-    newThings
+      .on('click', curry(onClickThing)(className, onSelectThing));
+
+    var currentThings = newThings.merge(things);
+    currentThings.attr('cx', accessor('x'));
+    currentThings.attr('cy', accessor('y'));
+    currentThings.classed('selected', curry(isSelected)(selectedThing));
+
+    return currentThings;
+  }
+
+  function renderLabels(
+    thingData: Array<Thing>,
+    className: string,
+    shouldUpdateText: boolean
+  ) {
+    var labelRoot = d3.select(`#${className}-root`);
+    var labels = labelRoot
+      .selectAll('.' + className)
+      .data(thingData, accessor());
+    labels.exit().remove();
+    var newLabels = labels
+      .enter()
       .append('foreignObject')
+      .classed(className, true)
+      .classed('label', true)
       .attr('width', thingRadius * 2)
-      .attr('height', thingRadius * 2)
+      .attr('height', thingRadius * 2);
+
+    newLabels
       // Never forget: Using the namespace when appending an html
       // element to a foreignObject is incredibly important. Without it,
       // a div will not size itself correctly for its contents.
@@ -161,31 +212,42 @@ export function renderMap({
       .append('xhtml:div')
       .classed('name', true);
 
-    var currentThings = newThings.merge(things);
-    currentThings.select('.name').text(accessor('name'));
-    currentThings.attr('transform', getTransform);
-    currentThings.classed('selected', isSelected);
-
-    return currentThings;
-
-    function isSelected(thing: Thing) {
-      return selectedThing && thing.id === selectedThing.id;
+    var currentLabels = newLabels.merge(labels);
+    if (shouldUpdateText) {
+      currentLabels.select('.name').text(accessor('name'));
     }
+    currentLabels
+      .attr('id', curry(prefixId)('label-'))
+      .attr('x', offsetXByNegativeRadius)
+      .attr('y', offsetYByNegativeRadius);
 
-    function onClickThing(thing: Thing) {
-      if (className === 'project') {
-        onSelectThing({ projectId: thing.id });
-      } else if (className === 'forceSource') {
-        onSelectThing({ forceSourceId: thing.id });
-      } else {
-        throw Error('Unknown Thing was clicked.');
-      }
+    return currentLabels;
+  }
+
+  function isSelected(selectedThing: Thing, thing: Thing) {
+    return selectedThing && thing.id === selectedThing.id;
+  }
+
+  function onClickThing(
+    className: string,
+    onSelectThing: (Thing) => void,
+    thing: Thing
+  ) {
+    if (className === 'project') {
+      onSelectThing({ projectId: thing.id });
+    } else if (className === 'forceSource') {
+      onSelectThing({ forceSourceId: thing.id });
+    } else {
+      throw Error('Unknown Thing was clicked.');
     }
   }
-}
 
-function getTransform(thing: Thing) {
-  return `translate(${thing.x}, ${thing.y})`;
+  function offsetXByNegativeRadius(thing: Thing) {
+    return thing.x - thingRadius;
+  }
+  function offsetYByNegativeRadius(thing: Thing) {
+    return thing.y - thingRadius;
+  }
 }
 
 function getAttraction(forceSource: ForceSource, project: Project): number {
@@ -204,4 +266,8 @@ function getAttraction(forceSource: ForceSource, project: Project): number {
 
 function onZoom() {
   zoomRootSel.attr('transform', d3.event.transform);
+}
+
+function prefixId(prefix, thing: Thing) {
+  return `${prefix}${thing.id}`;
 }
