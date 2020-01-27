@@ -22,6 +22,7 @@ var routeState = RouteState({
   routeState.routeFromHash();
 })();
 
+// TODO: Consolidate selAttr and selProj into a single thing.
 function followRoute({ hideUI, debug, selProj, selAttr }) {
   wireMainControls({
     onAddProjectClick,
@@ -41,7 +42,7 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
 
   d3.select(document.body).classed('hide-ui', hideUI);
   d3.select(document.body).classed('debug', debug);
-  renderTopLevelToggles();
+  renderTopLevelToggles({ selProj, selAttr });
 
   refreshFromStore();
 

@@ -297,8 +297,9 @@ footer {
 #toggle-forceSource-controls .display-area {
   border-radius: 50%;
   background-color: black;
-  width: 26px;
-  height: 26px;
+  border: 2px solid black;
+  width: 22px;
+  height: 22px;
 }
 
 #toggle-project-controls {
@@ -312,8 +313,17 @@ footer {
   height: 22px;
 }
 
+.top-level-toggle .display-area.call-attn {
+  animation: pulse-border 1s ease 2 alternate;
+}
+
 @media all and (max-height: 568px) {
   body {
     font-size: 18px;
   }
+}
+
+@keyframes pulse-border {
+  0% { border-width: 2px }
+  100% { border-width: 10px }
 }
