@@ -193,6 +193,7 @@ ul.props {
 
 .prop .prop-label {
   width: 100%;
+  pointer-events: initial;
 }
 
 .prop .prop-slider {
