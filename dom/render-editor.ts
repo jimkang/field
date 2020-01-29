@@ -35,7 +35,6 @@ export function renderEditor({
   });
 
   renderProps(thing, thingType, onChange);
-  var editor = d3.select(`#${thingType}-sheet`);
   editor.select('.add-prop-button').on('click', onAddPropClick);
   editor.select('.delete-button').on('click', onDeleteClick);
 
