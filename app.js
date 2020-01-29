@@ -94,11 +94,19 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
   }
 
   function onSelectProject({ projectId }) {
-    routeState.addToRoute({ selProj: projectId });
+    if (!projectId) {
+      routeState.removeFromRoute('selProj');
+    } else {
+      routeState.addToRoute({ selProj: projectId });
+    }
   }
 
   function onSelectForceSource({ forceSourceId }) {
-    routeState.addToRoute({ selAttr: forceSourceId });
+    if (!forceSourceId) {
+      routeState.removeFromRoute('selAttr');
+    } else {
+      routeState.addToRoute({ selAttr: forceSourceId });
+    }
   }
 
   function onExportClick() {

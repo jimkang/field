@@ -19,12 +19,17 @@ export function renderEditor({
   onAddProp: (Thing) => void;
   onDeleteThing: (Thing) => void;
 }) {
+  var editor = d3.select(`#${thingType}-sheet`);
+  var label = editor.select('.name');
+  editor.selectAll(':not(.name)').classed('hidden', !thing);
+
   if (!thing) {
+    label.text(`[No ${thingType} selected.]`);
     return;
   }
 
   wireContentEditable({
-    editableSelection: d3.select(`#${thingType}-sheet .name`),
+    editableSelection: label,
     initialValue: thing.name,
     onContentChanged: onNameChanged
   });

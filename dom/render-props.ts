@@ -12,7 +12,7 @@ export function renderProps(
   var propsRoot = editor.select('.props');
   var allProps = propsRoot
     .selectAll('.prop')
-    .data(thing.numberProps, accessor('name'));
+    .data(thing ? thing.numberProps : [], accessor('name'));
 
   allProps.exit().remove();
 

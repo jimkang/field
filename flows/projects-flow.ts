@@ -81,12 +81,12 @@ function projectsFlow({
 
   function onDeleteProject(project: Project) {
     deleteThing('project', project);
-    onInvalidate();
+    onSelectProject({ projectId: undefined });
   }
 
   function onDeleteForceSource(forceSource: ForceSource) {
     deleteThing('forceSource', forceSource);
-    onInvalidate();
+    onSelectForceSource({ forceSourceId: undefined });
   }
 }
 
