@@ -343,6 +343,10 @@ footer {
   animation: pulse-border 1s ease 2 alternate;
 }
 
+#downloads {
+  pointer-events: initial;
+}
+
 @media all and (max-height: 568px) {
   body {
     font-size: 18px;
