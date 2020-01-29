@@ -181,6 +181,30 @@ input {
   display: block;
 }
 
+ul.props {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.prop {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.prop .prop-label {
+  width: 100%;
+}
+
+.prop .prop-slider {
+  flex-grow: 1;
+}
+
+.prop .prop-val {
+  width: 3em;
+  font-size: 2em;
+  margin-left: 0.5em;
+}
+
 footer {
   margin-top: 1em;
 }
@@ -254,6 +278,7 @@ footer {
   line-height: 1em;
   /*! margin-top: 0.5em; */
   text-align: center;
+  pointer-events: initial;
 }
 
 .name-container {
