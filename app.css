@@ -75,14 +75,14 @@ p {
 }
 
 button {
-  color: #fff;
+  color: #666;
   font-size: 1em;
   cursor: pointer;
-  background-color: #111;
+  background-color: #fff;
   padding-top: 0.5em;
   border-radius: 1.2em;
   border-width: 2px;
-  border-color: #fff;
+  border-color: #666;
   border-style: solid;
   min-width: 44px;
   padding-bottom: 0.5em;
@@ -114,7 +114,7 @@ input {
   position: absolute;
   display: flex;
   flex-direction: column;
-  align-items: end;
+  align-items: center;
   pointer-events: none;
   width: 100%;
 }
@@ -235,10 +235,10 @@ footer {
 }
 
 .editor-container {
-  background-color: hsla(0, 0%, 0%, 0.1);
+  background-color: hsla(0, 0%, 95%, 1.0);
   margin-bottom: 0.5em;
-  border: 4px dashed #666;
-  border-radius: 0.2em;
+  border: 4px solid #666;
+  border-radius: 0.5em;
   /* Hidden by default. */
   opacity: 0;
   transition: opacity 1s;
@@ -252,7 +252,7 @@ footer {
 
 .name {
   line-height: 1em;
-  margin-top: -0.5em;
+  margin-top: 0.5em;
   text-align: center;
 }
 
