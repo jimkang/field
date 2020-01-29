@@ -1,4 +1,9 @@
 import { Project, ForceSource, ThingType, Thing } from './types';
+var {
+  thingDefaults,
+  projectDefaults,
+  forceSourceDefaults
+} = require('./defaults');
 
 var curry = require('lodash.curry');
 
@@ -50,7 +55,10 @@ function saveAll(thingType: ThingType) {
 }
 
 function getAll(thingType: ThingType) {
-  return Object.values(dictsForTypes[thingType]);
+  //return Object.values(dictsForTypes[thingType]);
+  return Object.values(dictsForTypes[thingType]).map(
+    curry(upgradeThing)(thingType)
+  );
 }
 
 function clearAll(thingType: ThingType) {
@@ -75,6 +83,19 @@ function inflateDateValue(value: string | Date): Date {
   if (typeof value === 'string') {
     return new Date(value);
   }
+}
+
+function upgradeThing(thingType: ThingType, thing: Thing): Thing {
+  // TODO: Find out why you run out of memory when assigning directly
+  // to thingDefaults instead of {}. Sure, it mutates thingDefaults, but
+  // does it get bigger, and why?
+  var upgraded: Thing = Object.assign({}, thingDefaults, thing);
+  if (thingType === 'forceSource') {
+    upgraded = Object.assign({}, forceSourceDefaults, upgraded);
+  } else if (thingType === 'project') {
+    upgraded = Object.assign({}, projectDefaults, upgraded);
+  }
+  return upgraded;
 }
 
 module.exports = {

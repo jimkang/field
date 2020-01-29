@@ -2,6 +2,7 @@ import { Thing, ThingType } from '../types';
 var cloneDeep = require('lodash.clonedeep');
 var d3 = require('d3-selection');
 import { renderProps } from './render-props';
+import { renderTags } from './render-tags';
 var wireContentEditable = require('./wire-contenteditable');
 
 // Whether or not an editor's container is visible or
@@ -11,12 +12,14 @@ export function renderEditor({
   thingType,
   onChange,
   onAddProp,
+  onAddTag,
   onDeleteThing
 }: {
   thing: Thing;
   thingType: ThingType;
   onChange: (Thing) => void;
   onAddProp: (Thing) => void;
+  onAddTag: (Thing) => void;
   onDeleteThing: (Thing) => void;
 }) {
   var editor = d3.select(`#${thingType}-sheet`);
@@ -38,6 +41,9 @@ export function renderEditor({
   editor.select('.add-prop-button').on('click', onAddPropClick);
   editor.select('.delete-button').on('click', onDeleteClick);
 
+  renderTags(thing, thingType, onChange);
+  editor.select('.add-tag-button').on('click', onTagClick);
+
   function onNameChanged(newText) {
     var copy = cloneDeep(thing);
     copy.name = newText;
@@ -46,6 +52,10 @@ export function renderEditor({
 
   function onAddPropClick() {
     onAddProp(thing);
+  }
+
+  function onTagClick() {
+    onAddTag(thing);
   }
 
   function onDeleteClick() {

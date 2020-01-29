@@ -1,4 +1,11 @@
-import { Project, ForceSource, ThingType, Thing, NumberProp } from '../types';
+import {
+  Project,
+  ForceSource,
+  ThingType,
+  Thing,
+  NumberProp,
+  StringProp
+} from '../types';
 import { renderEditor } from '../dom/render-editor';
 import { renderMap } from '../dom/render-map';
 var { update, deleteThing } = require('../store');
@@ -36,6 +43,7 @@ function projectsFlow({
     thingType: ThingType.project,
     onChange: onChangeProject,
     onAddProp,
+    onAddTag,
     onDeleteThing: onDeleteProject
   });
   renderEditor({
@@ -43,6 +51,7 @@ function projectsFlow({
     thingType: ThingType.forceSource,
     onChange: onChangeForceSource,
     onAddProp,
+    onAddTag,
     onDeleteThing: onDeleteForceSource
   });
 
@@ -76,6 +85,15 @@ function projectsFlow({
       value: 0.5
     };
     thing.numberProps.push(prop);
+    onInvalidate();
+  }
+
+  function onAddTag(thing: Thing) {
+    var tag: StringProp = {
+      id: `tag-${randomId(4)}`,
+      value: 'Cool new tag'
+    };
+    thing.tags.push(tag);
     onInvalidate();
   }
 

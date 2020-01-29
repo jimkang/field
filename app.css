@@ -347,6 +347,10 @@ footer {
   pointer-events: initial;
 }
 
+[contenteditable=true] {
+  pointer-events: initial;
+}
+
 @media all and (max-height: 568px) {
   body {
     font-size: 18px;
