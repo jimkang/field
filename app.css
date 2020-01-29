@@ -351,6 +351,16 @@ footer {
   pointer-events: initial;
 }
 
+#field-sheet {
+  max-width: 10em;
+  display: flex;
+}
+
+.filter-field {
+  width: 10em;
+  font-size: 1.2em;
+}
+
 @media all and (max-height: 568px) {
   body {
     font-size: 18px;
