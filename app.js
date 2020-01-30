@@ -8,6 +8,7 @@ var { roll } = require('probable');
 var renderDownloadLink = require('render-dl-link');
 var curry = require('lodash.curry');
 var renderTopLevelToggles = require('./dom/render-top-level-toggles');
+var intersection = require('lodash.intersection');
 
 var randomId = require('@jimkang/randomid')();
 
@@ -23,7 +24,12 @@ var routeState = RouteState({
 })();
 
 // TODO: Consolidate selAttr and selProj into a single thing.
-function followRoute({ hideUI, debug, selProj, selAttr }) {
+function followRoute({ hideUI, debug, selProj, selAttr, filterIncludeTags }) {
+  var includeTags;
+  if (filterIncludeTags) {
+    includeTags = filterIncludeTags.split(',');
+  }
+
   wireMainControls({
     onAddProjectClick,
     onClearProjectsClick: createRunner([
@@ -37,18 +43,24 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
     ]),
     onExportClick,
     onImportFile,
-    onFindAndReplace
+    onFindAndReplace,
+    onIncludeTags
   });
 
   d3.select(document.body).classed('hide-ui', hideUI);
   d3.select(document.body).classed('debug', debug);
   renderTopLevelToggles({ selProj, selAttr });
 
-  refreshFromStore();
+  refreshFromStore({ filterIncludeTags });
 
   function refreshFromStore() {
     var projects = getAll('project');
     var forceSources = getAll('forceSource');
+
+    if (filterIncludeTags) {
+      projects = projects.filter(curry(hasATag)(includeTags));
+      forceSources = forceSources.filter(curry(hasATag)(includeTags));
+    }
 
     projectsFlow({
       projectData: projects,
@@ -146,6 +158,10 @@ function followRoute({ hideUI, debug, selProj, selAttr }) {
     updateAll('project', projects);
     refreshFromStore();
   }
+
+  function onIncludeTags(tags) {
+    routeState.addToRoute({ filterIncludeTags: tags.join(',') });
+  }
 }
 
 function findAndReplaceAttributeInThing(findText, replaceText, thing) {
@@ -170,6 +186,10 @@ function createRunner(fns) {
   function run() {
     fns.forEach(runFn);
   }
+}
+
+function hasATag(tagsToLookFor, thing) {
+  return intersection(tagsToLookFor, thing.tags).length > 0;
 }
 
 function runFn(fn) {

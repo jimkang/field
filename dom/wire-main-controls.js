@@ -16,7 +16,8 @@ function wireMainControls({
   onClearForceSourcesClick,
   onExportClick,
   onImportFile,
-  onFindAndReplace
+  onFindAndReplace,
+  onIncludeTags
 }) {
   on('#add-project-button', 'click', onAddProjectClick);
   on('#clear-projects-button', 'click', onClearProjectsClick);
@@ -27,6 +28,7 @@ function wireMainControls({
   on('#replace-button', 'click', onReplaceClick);
   wireReveal('#import-button', filePicker);
   wireReveal('#show-replace-button', findAndReplaceContainer);
+  on('#include-tags-field', 'change', onIncludeTagsChange);
 
   function onImportFileChange() {
     var file = this.files[0];
@@ -63,6 +65,10 @@ function wireMainControls({
       onFindAndReplace({ findText, replaceText });
       findAndReplaceContainer.classList.add('hidden');
     }
+  }
+
+  function onIncludeTagsChange(e) {
+    onIncludeTags(e.target.value.split(',').map(s => s.trim()));
   }
 }
 

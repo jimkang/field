@@ -20,6 +20,7 @@ export interface Thing {
   numberProps: Array<NumberProp>;
   created: Date;
   tags: Array<StringProp>;
+  thingType: ThingType;
   x: number;
   y: number;
 }

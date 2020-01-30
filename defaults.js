@@ -8,8 +8,12 @@ var thingDefaults = {
 };
 
 // Fill in as the schema updates.
-var projectDefaults = {};
+var projectDefaults = {
+  thingType: 'project'
+};
 
-var forceSourceDefaults = {};
+var forceSourceDefaults = {
+  thingType: 'forceSource'
+};
 
 module.exports = { thingDefaults, projectDefaults, forceSourceDefaults };

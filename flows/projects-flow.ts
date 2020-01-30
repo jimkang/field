@@ -85,6 +85,7 @@ function projectsFlow({
       value: 0.5
     };
     thing.numberProps.push(prop);
+    update(thing.thingType, thing);
     onInvalidate();
   }
 
@@ -94,6 +95,7 @@ function projectsFlow({
       value: 'Cool new tag'
     };
     thing.tags.push(tag);
+    update(thing.thingType, thing);
     onInvalidate();
   }
 

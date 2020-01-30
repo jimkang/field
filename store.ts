@@ -4,7 +4,6 @@ var {
   projectDefaults,
   forceSourceDefaults
 } = require('./defaults');
-
 var curry = require('lodash.curry');
 
 // Singleton.
@@ -86,16 +85,32 @@ function inflateDateValue(value: string | Date): Date {
 }
 
 function upgradeThing(thingType: ThingType, thing: Thing): Thing {
-  // TODO: Find out why you run out of memory when assigning directly
-  // to thingDefaults instead of {}. Sure, it mutates thingDefaults, but
-  // does it get bigger, and why?
-  var upgraded: Thing = Object.assign({}, thingDefaults, thing);
+  fillInBlanks(thing, thingDefaults);
   if (thingType === 'forceSource') {
-    upgraded = Object.assign({}, forceSourceDefaults, upgraded);
+    fillInBlanks(thing, forceSourceDefaults);
   } else if (thingType === 'project') {
-    upgraded = Object.assign({}, projectDefaults, upgraded);
+    fillInBlanks(thing, projectDefaults);
   }
-  return upgraded;
+  return thing;
+}
+
+function fillInBlanks(target, source) {
+  for (var key in source) {
+    if (!(key in target)) {
+      let value = source[key];
+      if (Array.isArray(value)) {
+        // Avoid setting this to a reference to the array on the template.
+        target[key] = value.slice();
+      } else if (value instanceof Date) {
+        target[key] = new Date(value);
+      } else if (typeof value === 'object') {
+        // TODO.
+        throw new Error('Copying objects not implemented.');
+      } else {
+        target[key] = value;
+      }
+    }
+  }
 }
 
 module.exports = {
