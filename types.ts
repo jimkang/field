@@ -19,6 +19,7 @@ export interface Thing {
   name: string;
   numberProps: Array<NumberProp>;
   created: Date;
+  // TODO: Shouldn't it just be an array of simple strings?
   tags: Array<StringProp>;
   thingType: ThingType;
   x: number;

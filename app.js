@@ -9,6 +9,7 @@ var renderDownloadLink = require('render-dl-link');
 var curry = require('lodash.curry');
 var renderTopLevelToggles = require('./dom/render-top-level-toggles');
 var intersection = require('lodash.intersection');
+var accessor = require('accessor');
 
 var randomId = require('@jimkang/randomid')();
 
@@ -189,7 +190,9 @@ function createRunner(fns) {
 }
 
 function hasATag(tagsToLookFor, thing) {
-  return intersection(tagsToLookFor, thing.tags).length > 0;
+  return (
+    intersection(tagsToLookFor, thing.tags.map(accessor('value'))).length > 0
+  );
 }
 
 function runFn(fn) {
