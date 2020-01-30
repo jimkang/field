@@ -48,39 +48,41 @@
           </div>
         </section>
         <section id="field-sheet" class="controls ui editor-container">
-          <button id="add-project-button">Add a project</button>
-          <button id="add-forceSource-button">Add a force source</button>
-          <button id="export-button">Export</button>
-          <div id="downloads" class="hidden"></div>
-          <button id="import-button">Import</button>
-          <input
-            type="file"
-            id="import-file"
-            accept="application/json"
-            class="hidden"
-          />
-          <button id="show-replace-button">Find and replace attribute</button>
-          <form>
-            <div id="find-and-replace-container" class="centered-col hidden">
-              <label class="prop-label">Find attributes named:</label>
-              <input type="text" id="find-field" required="required" />
-              <label class="prop-label">Replace with:</label>
-              <input type="text" id="replace-field" required="required" />
-              <input type="submit" id="replace-button" value="Replace all" />
+          <div class="field-sheet-contents">
+            <button id="add-project-button">Add a project</button>
+            <button id="add-forceSource-button">Add a force source</button>
+            <button id="export-button">Export</button>
+            <div id="downloads" class="hidden"></div>
+            <button id="import-button">Import</button>
+            <input
+              type="file"
+              id="import-file"
+              accept="application/json"
+              class="hidden"
+            />
+            <button id="show-replace-button">Find and replace attribute</button>
+            <form>
+              <div id="find-and-replace-container" class="centered-col hidden">
+                <label class="prop-label">Find attributes named:</label>
+                <input type="text" id="find-field" required="required" />
+                <label class="prop-label">Replace with:</label>
+                <input type="text" id="replace-field" required="required" />
+                <input type="submit" id="replace-button" value="Replace all" />
+              </div>
+            </form>
+            <div>
+              <label>Include only things with these tags:</label>
+              <input type="text" id="include-tags-field" class="filter-field" />
             </div>
-          </form>
-          <div>
-            <label>Include only things with these tags:</label>
-            <input type="text" id="include-tags-field" class="filter-field" />
+            <div>
+              <label>Exclude things with these tags:</label>
+              <input type="text" id="exclude-tags-field" class="filter-field" />
+            </div>
+            <button id="clear-projects-button">Clear all projects</button>
+            <button id="clear-forceSources-button">
+              Clear all force sources
+            </button>
           </div>
-          <div>
-            <label>Exclude things with these tags:</label>
-            <input type="text" id="exclude-tags-field" class="filter-field" />
-          </div>
-          <button id="clear-projects-button">Clear all projects</button>
-          <button id="clear-forceSources-button">
-            Clear all force sources
-          </button>
         </section>
 
         <section id="project-sheet" class="prop-editor ui editor-container">

@@ -266,8 +266,8 @@ footer {
   border-radius: 0.5em;
   /* Hidden by default. */
   opacity: 0;
-  transition: opacity 1s;
   display: none;
+  transition: opacity 1s;
 }
 
 .editor-container.active {
@@ -353,6 +353,9 @@ footer {
 
 #field-sheet {
   max-width: 10em;
+}
+
+#field-sheet .field-sheet-contents {
   display: flex;
 }
 
