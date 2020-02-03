@@ -36,6 +36,14 @@ Run `make prettier` (expects you to have run `npm install -g prettier`) and `esl
 
 Run `make build` to build the index.js.
 
+## TODO:
+
+- Dots for projects, with callouts and labels, so that positions relative to forces can be more accurate
+- Switching fields (documents)
+- Field snapshots (copies of current state)
+- Filtering force sources
+- Dragging property sheets
+
 ## Notes on performance
 
 These benchmarks are admittedly not perfect, but for posterity's sake, I'm writing this down. On 2020-01-23, I followed this script for these benchmarks:
