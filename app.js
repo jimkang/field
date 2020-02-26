@@ -12,6 +12,7 @@ var intersection = require('lodash.intersection');
 var accessor = require('accessor');
 var VError = require('verror');
 var ep = require('errorback-promise');
+var oknok = require('oknok');
 
 var randomId = require('@jimkang/randomid')();
 
@@ -53,15 +54,7 @@ async function followRoute({
     if (fieldNames.length > 0) {
       field = fieldNames[0].id;
     } else {
-      let { error, values } = await ep(store.createField, {
-        name: 'A cool new field of stuff'
-      });
-      if (error) {
-        handleError(VError(error, 'Could not create a field! Try reloading?'));
-        return;
-      }
-      field = values[0].id;
-      routeState.addToRoute({ field });
+      createNewField({ store });
       return;
     }
   }
@@ -73,19 +66,22 @@ async function followRoute({
     );
     return;
   }
+
   var fieldStore = values[0];
   // var fieldNames = store.getFieldNames
   wireMainControls({
     onAddProjectClick,
-    onClearProjectsClick: createRunner([
-      () => fieldStore.clearAll('project'),
-      refreshFromStore
-    ]),
+    onClearProjectsClick: () =>
+      fieldStore.clearAll(
+        'project',
+        oknok({ ok: refreshFromStore, nok: handleError })
+      ),
     onAddForceSourceClick,
-    onClearForceSourcesClick: createRunner([
-      () => fieldStore.clearAll('forceSource'),
-      refreshFromStore
-    ]),
+    onClearForceSourcesClick: () =>
+      fieldStore.clearAll(
+        'forceSource',
+        oknok({ ok: refreshFromStore, nok: handleError })
+      ),
     onExportClick,
     onImportFile,
     onFindAndReplace,
@@ -132,8 +128,14 @@ async function followRoute({
       vx: 0,
       vy: 0
     };
-    fieldStore.update('project', newProject);
-    onSelectProject({ projectId: newProject.id });
+    fieldStore.update(
+      'project',
+      newProject,
+      oknok({
+        ok: () => onSelectProject({ projectId: newProject.id }),
+        nok: handleError
+      })
+    );
   }
 
   function onAddForceSourceClick() {
@@ -183,11 +185,7 @@ async function followRoute({
   }
 
   function onImportFile({ forceSources, projects }) {
-    fieldStore.clearAll('forceSource');
-    fieldStore.clearAll('project');
-    fieldStore.updateAll('forceSource', forceSources);
-    fieldStore.updateAll('project', projects);
-    refreshFromStore();
+    createNewField({ store, forceSources, projects });
   }
 
   function onFindAndReplace({ findText, replaceText }) {
@@ -225,20 +223,26 @@ function reportTopLevelError(msg, url, lineNo, columnNo, error) {
   handleError(error);
 }
 
-function createRunner(fns) {
-  return run;
-
-  function run() {
-    fns.forEach(runFn);
-  }
-}
-
 function hasATag(tagsToLookFor, thing) {
   return (
     intersection(tagsToLookFor, thing.tags.map(accessor('value'))).length > 0
   );
 }
 
-function runFn(fn) {
-  fn();
+function createFieldName() {
+  return `A cool new field of stuff ${randomId(4)}`;
+}
+
+async function createNewField({ store, forceSources, projects }) {
+  let { error, values } = await ep(store.createField, {
+    name: createFieldName(),
+    forceSources,
+    projects
+  });
+  if (error) {
+    handleError(VError(error, 'Could not create a field! Try reloading?'));
+    return;
+  }
+  var fieldId = values[0].id;
+  routeState.addToRoute({ field: fieldId });
 }

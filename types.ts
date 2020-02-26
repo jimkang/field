@@ -40,3 +40,7 @@ export interface ForceSource extends Thing {
   fx: number;
   fy: number;
 }
+
+export type ThingDict = Record<string, Thing>;
+
+export type Done = (Error, any) => void;

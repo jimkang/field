@@ -1,4 +1,11 @@
-import { Project, ForceSource, ThingType, Thing } from './types';
+import {
+  Project,
+  ForceSource,
+  ThingType,
+  Thing,
+  ThingDict,
+  Done
+} from './types';
 var PouchDB = require('pouchdb');
 var oknok = require('oknok');
 
@@ -16,19 +23,32 @@ function Store() {
 
   return { loadField, getFieldNames, createField };
 
-  function loadField({ field }: { field: string }, done: () => void) {
-    db.get(field, oknok({ ok: FieldStore, nok: done }));
+  function loadField({ field }: { field: string }, done: Done) {
+    db.get(field, oknok({ ok: doc => done(null, FieldStore(doc)), nok: done }));
   }
 
-  function getFieldNames(done: (Error, any) => void) {
+  function getFieldNames(done: Done) {
     db.allDocs(
       { include_docs: true },
       oknok({ ok: getJustNamesAndIds, nok: done })
     );
   }
 
-  function createField({ name }: { name: string }, done: (Error, any) => void) {
-    var field = { _id: new Date().toJSON(), name, id: `field-${randomId(4)}` };
+  function createField(
+    {
+      name,
+      projects,
+      forceSources
+    }: { name: string; projects: ThingDict; forceSources: ThingDict },
+    done: Done
+  ) {
+    var field = {
+      _id: new Date().toJSON(),
+      name,
+      id: `field-${randomId(4)}`,
+      projects: projects || {},
+      forceSources: forceSources || {}
+    };
     db.put(field, oknok({ ok: () => done(null, field), nok: done }));
   }
 
@@ -41,33 +61,24 @@ function Store() {
   }
 
   function FieldStore(doc) {
-    var dictsForTypes: Record<string, Record<string, Thing>> = {
+    const _id: string = doc._id;
+
+    var dictsForTypes: Record<string, ThingDict> = {
       project: {},
       forceSource: {}
     };
+
     if (doc.projects) {
-      try {
-        var projectDict: Record<string, Project> = JSON.parse(
-          localStorage.projects
-        );
-        for (var id in projectDict) {
-          inflateDates(projectDict[id]);
-        }
-        dictsForTypes['project'] = projectDict;
-      } catch (e) {
-        console.log(e, e.stack);
+      var projectDict: Record<string, Project> = doc.projects;
+      for (var id in projectDict) {
+        inflateDates(projectDict[id]);
       }
+      dictsForTypes['project'] = projectDict;
     }
 
     if (doc.forceSources) {
-      try {
-        var forceSourceDict: Record<string, ForceSource> = JSON.parse(
-          localStorage.forceSources
-        );
-        dictsForTypes['forceSource'] = forceSourceDict;
-      } catch (e) {
-        console.log(e, e.stack);
-      }
+      var forceSourceDict: Record<string, ForceSource> = doc.forceSources;
+      dictsForTypes['forceSource'] = forceSourceDict;
     }
 
     return {
@@ -78,21 +89,33 @@ function Store() {
       clearAll,
       getAll
     };
-    function update(thingType: ThingType, thing: Project | ForceSource) {
+
+    function update(
+      thingType: ThingType,
+      thing: Project | ForceSource,
+      done: Done
+    ) {
       dictsForTypes[thingType][thing.id] = thing;
-      saveAll(thingType);
+      saveAll(done);
     }
 
     function updateAll(
       thingType: ThingType,
-      things: Array<Project | ForceSource>
+      things: Array<Project | ForceSource>,
+      done: Done
     ) {
       things.forEach(curry(update)(thingType));
-      saveAll(thingType);
+      saveAll(done);
     }
 
-    function saveAll(thingType: ThingType) {
-      localStorage[`${thingType}s`] = JSON.stringify(dictsForTypes[thingType]);
+    function saveAll(done: Done) {
+      var field = {
+        _id,
+        projects: dictsForTypes['project'],
+        forceSource: dictsForTypes['forceSource']
+      };
+
+      db.put(field, done);
     }
 
     function getAll(thingType: ThingType) {
@@ -102,14 +125,18 @@ function Store() {
       );
     }
 
-    function clearAll(thingType: ThingType) {
+    function clearAll(thingType: ThingType, done: Done) {
       dictsForTypes[thingType] = {};
-      saveAll(thingType);
+      saveAll(done);
     }
 
-    function deleteThing(thingType: ThingType, thing: Project | ForceSource) {
+    function deleteThing(
+      thingType: ThingType,
+      thing: Project | ForceSource,
+      done: Done
+    ) {
       delete dictsForTypes[thingType][thing.id];
-      saveAll(thingType);
+      saveAll(done);
     }
 
     function inflateDates(project: Project) {
