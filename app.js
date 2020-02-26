@@ -2,7 +2,7 @@ var handleError = require('handle-error-web');
 var RouteState = require('route-state');
 var wireMainControls = require('./dom/wire-main-controls');
 var d3 = require('d3-selection');
-import { getAll, clearAll, update, updateAll } from './store';
+var Store = require('./store');
 var projectsFlow = require('./flows/projects-flow');
 var { roll } = require('probable');
 var renderDownloadLink = require('render-dl-link');
@@ -10,6 +10,8 @@ var curry = require('lodash.curry');
 var renderTopLevelToggles = require('./dom/render-top-level-toggles');
 var intersection = require('lodash.intersection');
 var accessor = require('accessor');
+var VError = require('verror');
+var ep = require('errorback-promise');
 
 var randomId = require('@jimkang/randomid')();
 
@@ -25,21 +27,63 @@ var routeState = RouteState({
 })();
 
 // TODO: Consolidate selAttr and selProj into a single thing.
-function followRoute({ hideUI, debug, selProj, selAttr, filterIncludeTags }) {
+async function followRoute({
+  hideUI,
+  debug,
+  field,
+  selProj,
+  selAttr,
+  filterIncludeTags
+}) {
   var includeTags;
   if (filterIncludeTags) {
     includeTags = filterIncludeTags.split(',');
   }
 
+  var store = Store();
+
+  if (!field) {
+    let result = await ep(store.getFieldNames);
+    let { error, values } = result;
+    if (error) {
+      handleError(VError(error, 'Could not get fields. Try reloading?'));
+      return;
+    }
+    let fieldNames = values[0];
+    if (fieldNames.length > 0) {
+      field = fieldNames[0].id;
+    } else {
+      let { error, values } = await ep(store.createField, {
+        name: 'A cool new field of stuff'
+      });
+      if (error) {
+        handleError(VError(error, 'Could not create a field! Try reloading?'));
+        return;
+      }
+      field = values[0].id;
+      routeState.addToRoute({ field });
+      return;
+    }
+  }
+
+  var { error, values } = await ep(store.loadField, { field });
+  if (error) {
+    handleError(
+      VError(error, 'Could not load the field named %s. Try reloading?', field)
+    );
+    return;
+  }
+  var fieldStore = values[0];
+  // var fieldNames = store.getFieldNames
   wireMainControls({
     onAddProjectClick,
     onClearProjectsClick: createRunner([
-      () => clearAll('project'),
+      () => fieldStore.clearAll('project'),
       refreshFromStore
     ]),
     onAddForceSourceClick,
     onClearForceSourcesClick: createRunner([
-      () => clearAll('forceSource'),
+      () => fieldStore.clearAll('forceSource'),
       refreshFromStore
     ]),
     onExportClick,
@@ -55,8 +99,8 @@ function followRoute({ hideUI, debug, selProj, selAttr, filterIncludeTags }) {
   refreshFromStore({ filterIncludeTags });
 
   function refreshFromStore() {
-    var projects = getAll('project');
-    var forceSources = getAll('forceSource');
+    var projects = fieldStore.getAll('project');
+    var forceSources = fieldStore.getAll('forceSource');
 
     if (filterIncludeTags) {
       projects = projects.filter(curry(hasATag)(includeTags));
@@ -88,7 +132,7 @@ function followRoute({ hideUI, debug, selProj, selAttr, filterIncludeTags }) {
       vx: 0,
       vy: 0
     };
-    update('project', newProject);
+    fieldStore.update('project', newProject);
     onSelectProject({ projectId: newProject.id });
   }
 
@@ -102,7 +146,7 @@ function followRoute({ hideUI, debug, selProj, selAttr, filterIncludeTags }) {
       fx: 50,
       fy: 50
     };
-    update('forceSource', newForceSource);
+    fieldStore.update('forceSource', newForceSource);
     onSelectForceSource({ forceSourceId: newForceSource.id });
   }
 
@@ -124,8 +168,8 @@ function followRoute({ hideUI, debug, selProj, selAttr, filterIncludeTags }) {
 
   function onExportClick() {
     var entiretyOfField = {
-      projects: getAll('project'),
-      forceSources: getAll('forceSource')
+      projects: fieldStore.getAll('project'),
+      forceSources: fieldStore.getAll('forceSource')
     };
     renderDownloadLink({
       blob: new Blob([JSON.stringify(entiretyOfField, null, 2)], {
@@ -139,24 +183,24 @@ function followRoute({ hideUI, debug, selProj, selAttr, filterIncludeTags }) {
   }
 
   function onImportFile({ forceSources, projects }) {
-    clearAll('forceSource');
-    clearAll('project');
-    updateAll('forceSource', forceSources);
-    updateAll('project', projects);
+    fieldStore.clearAll('forceSource');
+    fieldStore.clearAll('project');
+    fieldStore.updateAll('forceSource', forceSources);
+    fieldStore.updateAll('project', projects);
     refreshFromStore();
   }
 
   function onFindAndReplace({ findText, replaceText }) {
-    var projects = getAll('project');
-    var forceSources = getAll('forceSource');
+    var projects = fieldStore.getAll('project');
+    var forceSources = fieldStore.getAll('forceSource');
     projects.forEach(
       curry(findAndReplaceAttributeInThing)(findText, replaceText)
     );
     forceSources.forEach(
       curry(findAndReplaceAttributeInThing)(findText, replaceText)
     );
-    updateAll('forceSource', forceSources);
-    updateAll('project', projects);
+    fieldStore.updateAll('forceSource', forceSources);
+    fieldStore.updateAll('project', projects);
     refreshFromStore();
   }
 
