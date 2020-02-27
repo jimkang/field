@@ -2,7 +2,6 @@ var handleError = require('handle-error-web');
 var RouteState = require('route-state');
 var wireMainControls = require('./dom/wire-main-controls');
 var d3 = require('d3-selection');
-var Store = require('./store');
 var projectsFlow = require('./flows/projects-flow');
 var { roll } = require('probable');
 var renderDownloadLink = require('render-dl-link');
@@ -10,9 +9,10 @@ var curry = require('lodash.curry');
 var renderTopLevelToggles = require('./dom/render-top-level-toggles');
 var intersection = require('lodash.intersection');
 var accessor = require('accessor');
-var VError = require('verror');
-var ep = require('errorback-promise');
 var oknok = require('oknok');
+var initialFieldFlow = require('./flows/initial-field-flow');
+var ep = require('errorback-promise');
+import createNewField from './tasks/create-new-field';
 
 var randomId = require('@jimkang/randomid')();
 
@@ -41,33 +41,14 @@ async function followRoute({
     includeTags = filterIncludeTags.split(',');
   }
 
-  var store = Store();
-
-  if (!field) {
-    let result = await ep(store.getFieldNames);
-    let { error, values } = result;
-    if (error) {
-      handleError(VError(error, 'Could not get fields. Try reloading?'));
-      return;
-    }
-    let fieldNames = values[0];
-    if (fieldNames.length > 0) {
-      field = fieldNames[0].id;
-    } else {
-      createNewField({ store });
-      return;
-    }
-  }
-
-  var { error, values } = await ep(store.loadField, { field });
+  var { error, values } = await ep(initialFieldFlow, { fieldId: field });
   if (error) {
-    handleError(
-      VError(error, 'Could not load the field named %s. Try reloading?', field)
-    );
+    handleError(error);
     return;
   }
+  var { fieldStore, store } = values[0];
+  routeState.addToRoute({ field: fieldStore.getFieldId() }, false);
 
-  var fieldStore = values[0];
   // var fieldNames = store.getFieldNames
   wireMainControls({
     onAddProjectClick,
@@ -186,6 +167,7 @@ async function followRoute({
 
   function onImportFile({ forceSources, projects }) {
     createNewField({ store, forceSources, projects });
+    routeState.addToRoute({ field: fieldStore.getFieldId() });
   }
 
   function onFindAndReplace({ findText, replaceText }) {
@@ -227,22 +209,4 @@ function hasATag(tagsToLookFor, thing) {
   return (
     intersection(tagsToLookFor, thing.tags.map(accessor('value'))).length > 0
   );
-}
-
-function createFieldName() {
-  return `A cool new field of stuff ${randomId(4)}`;
-}
-
-async function createNewField({ store, forceSources, projects }) {
-  let { error, values } = await ep(store.createField, {
-    name: createFieldName(),
-    forceSources,
-    projects
-  });
-  if (error) {
-    handleError(VError(error, 'Could not create a field! Try reloading?'));
-    return;
-  }
-  var fieldId = values[0].id;
-  routeState.addToRoute({ field: fieldId });
 }

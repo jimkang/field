@@ -43,4 +43,9 @@ export interface ForceSource extends Thing {
 
 export type ThingDict = Record<string, Thing>;
 
-export type Done = (Error, any) => void;
+export type Done = (Error, any?) => void;
+// TODO: Define FieldStore.
+export type FieldStoreDone = (
+  Error,
+  { store, fieldStore }?: { store: object; fieldStore: object }
+) => void;

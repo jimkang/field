@@ -4,7 +4,8 @@ import {
   ThingType,
   Thing,
   ThingDict,
-  Done
+  Done,
+  FieldStoreDone
 } from './types';
 var PouchDB = require('pouchdb');
 var oknok = require('oknok');
@@ -18,13 +19,20 @@ var {
 } = require('./defaults');
 var curry = require('lodash.curry');
 
-function Store() {
+export function Store() {
   var db = new PouchDB('fields-db');
 
-  return { loadField, getFieldNames, createField };
+  var store = { loadField, getFieldNames, createField };
+  return store;
 
-  function loadField({ field }: { field: string }, done: Done) {
-    db.get(field, oknok({ ok: doc => done(null, FieldStore(doc)), nok: done }));
+  function loadField({ field }: { field: string }, done: FieldStoreDone) {
+    db.get(
+      field,
+      oknok({
+        ok: doc => done(null, { store, fieldStore: FieldStore(doc) }),
+        nok: done
+      })
+    );
   }
 
   function getFieldNames(done: Done) {
@@ -40,7 +48,7 @@ function Store() {
       projects,
       forceSources
     }: { name: string; projects: ThingDict; forceSources: ThingDict },
-    done: Done
+    done: FieldStoreDone
   ) {
     var field = {
       _id: new Date().toJSON(),
@@ -49,7 +57,13 @@ function Store() {
       projects: projects || {},
       forceSources: forceSources || {}
     };
-    db.put(field, oknok({ ok: () => done(null, field), nok: done }));
+    db.put(
+      field,
+      oknok({
+        ok: () => done(null, { store, fieldStore: FieldStore(field) }),
+        nok: done
+      })
+    );
   }
 
   function getJustNamesAndIds(result, done) {
@@ -62,6 +76,7 @@ function Store() {
 
   function FieldStore(doc) {
     const _id: string = doc._id;
+    const id: string = doc.id;
 
     var dictsForTypes: Record<string, ThingDict> = {
       project: {},
@@ -70,8 +85,8 @@ function Store() {
 
     if (doc.projects) {
       var projectDict: Record<string, Project> = doc.projects;
-      for (var id in projectDict) {
-        inflateDates(projectDict[id]);
+      for (var projectId in projectDict) {
+        inflateDates(projectDict[projectId]);
       }
       dictsForTypes['project'] = projectDict;
     }
@@ -82,6 +97,7 @@ function Store() {
     }
 
     return {
+      getFieldId,
       update,
       updateAll,
       saveAll,
@@ -89,6 +105,10 @@ function Store() {
       clearAll,
       getAll
     };
+
+    function getFieldId() {
+      return id;
+    }
 
     function update(
       thingType: ThingType,
@@ -183,5 +203,3 @@ function Store() {
     }
   }
 }
-
-module.exports = Store;
