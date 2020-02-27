@@ -36,6 +36,10 @@ Run `make prettier` (expects you to have run `npm install -g prettier`) and `esl
 
 Run `make build` to build the index.js.
 
+## Tests
+
+Run tests with `make test`. Run tests with the debugger with `make debug-test`.
+
 ## TODO:
 
 - Dots for projects, with callouts and labels, so that positions relative to forces can be more accurate
@@ -43,25 +47,6 @@ Run `make build` to build the index.js.
 - Field snapshots (copies of current state)
 - Filtering force sources
 - Dragging property sheets
-
-## Notes on performance
-
-These benchmarks are admittedly not perfect, but for posterity's sake, I'm writing this down. On 2020-01-23, I followed this script for these benchmarks:
-
-- Load the page in Firefox 72.0.1.
-- Zoom and pan so that all of the objects fit in the view (4 force sources and 14 projects).
-- Start profiling.
-- Drag around one force source four times, taking about a second for each drag. (The force sources activate the force simulation, causing the projects to move.)
-- Drag a different force source one time, taking about a second for the drag.
-- Stop profiling.
-
--------
-|Approach|Average FPS|
-|---|---|
-|[Projects as groups of circles and foreignObjects, moving via transform](https://github.com/jimkang/field/commit/1da5ec89efb4514db49c0629c030c59e63d04184)|30.90|
-|[Projects as ungrouped circles and foreignObjects, moving via direct attr changes, but also not updating text on simulation ticks](https://github.com/jimkang/field/commit/7b9970645252194f4aad8a96ecd9dfe7913cfcab)|41.22|
-|[Projects as groups of circles and foreignObjects, moving via transform, but also not updating text on simulation ticks](https://github.com/jimkang/field/commit/20179dcea6099de68c0adf6af0962fe3152e9b2c)|44.77|
-|[Projects as groups of circles and foreignObjects, moving via transform, and updating *only* the transform on simulation ticks](https://github.com/jimkang/field/commit/a0b3273f42db45f5e29168efa59750dd5856f03b)|49.17|
 
 License
 -------

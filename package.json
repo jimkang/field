@@ -21,13 +21,16 @@
   },
   "homepage": "https://github.com/jimkang/field",
   "devDependencies": {
+    "@types/tape": "^4.2.34",
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
+    "assert-no-error": "^1.0.0",
     "babel-preset-es2015": "^6.24.1",
     "babelify": "^7.3.0",
     "browserify": "^14.5.0",
     "eslint": "^6.7.2",
     "tape": "^4.13.0",
+    "ts-node": "^8.6.2",
     "uglify-es": "^3.3.9"
   },
   "dependencies": {

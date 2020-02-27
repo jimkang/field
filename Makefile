@@ -21,8 +21,13 @@ build:
 	$(BROWSERIFY) $(PLUGIN_SWITCH) app.js | $(UGLIFY) -c -m -o index.js
 
 prettier:
-	prettier --single-quote --write "**/*.js"
-	prettier --single-quote --write "**/*.ts"
+	prettier --single-quote --write "**/*.html"
+
+test:
+	node -r ts-node/register tests/initial-field-flow-tests.js
+
+debug-test:
+	node inspect -r ts-node/register tests/initial-field-flow-tests.js
 
 sync:
 	rsync -a $(HOMEDIR)/ $(USER)@$(SERVER):/$(APPDIR) \

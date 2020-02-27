@@ -7,7 +7,6 @@ import {
   Done,
   FieldStoreDone
 } from './types';
-var PouchDB = require('pouchdb');
 var oknok = require('oknok');
 
 var randomId = require('@jimkang/randomid')();
@@ -19,9 +18,7 @@ var {
 } = require('./defaults');
 var curry = require('lodash.curry');
 
-export function Store() {
-  var db = new PouchDB('fields-db');
-
+export function Store({ db }) {
   var store = { loadField, getFieldNames, createField };
   return store;
 

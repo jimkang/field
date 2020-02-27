@@ -5,10 +5,10 @@ var oknok = require('oknok');
 var VError = require('verror');
 
 function initialFieldFlow(
-  { fieldId }: { fieldId: string },
+  { db, fieldId }: { db: object; fieldId: string },
   done: FieldStoreDone
 ) {
-  var store = Store();
+  var store = Store({ db });
 
   if (fieldId) {
     loadField(fieldId);

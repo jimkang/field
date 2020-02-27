@@ -12,6 +12,8 @@ var accessor = require('accessor');
 var oknok = require('oknok');
 var initialFieldFlow = require('./flows/initial-field-flow');
 var ep = require('errorback-promise');
+var PouchDB = require('pouchdb');
+
 import createNewField from './tasks/create-new-field';
 
 var randomId = require('@jimkang/randomid')();
@@ -41,7 +43,8 @@ async function followRoute({
     includeTags = filterIncludeTags.split(',');
   }
 
-  var { error, values } = await ep(initialFieldFlow, { fieldId: field });
+  var db = new PouchDB('fields-db');
+  var { error, values } = await ep(initialFieldFlow, { fieldId: field, db });
   if (error) {
     handleError(error);
     return;
