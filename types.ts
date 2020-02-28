@@ -45,7 +45,10 @@ export type ThingDict = Record<string, Thing>;
 
 export type Done = (Error, any?) => void;
 // TODO: Define FieldStore.
-export type FieldStoreDone = (
-  Error,
-  { store, fieldStore }?: { store: object; fieldStore: object }
-) => void;
+export interface StorePack {
+  store?: object;
+  fieldStore?: object;
+  message?: object;
+}
+
+export type FieldStoreDone = (Error, StorePack?) => void;

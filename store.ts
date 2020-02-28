@@ -9,8 +9,6 @@ import {
 } from './types';
 var oknok = require('oknok');
 
-var randomId = require('@jimkang/randomid')();
-
 var {
   thingDefaults,
   projectDefaults,
@@ -22,9 +20,9 @@ export function Store({ db }) {
   var store = { loadField, getFieldNames, createField };
   return store;
 
-  function loadField({ field }: { field: string }, done: FieldStoreDone) {
+  function loadField({ fieldId }: { fieldId: string }, done: FieldStoreDone) {
     db.get(
-      field,
+      fieldId,
       oknok({
         ok: doc => done(null, { store, fieldStore: FieldStore(doc) }),
         nok: done
@@ -42,15 +40,20 @@ export function Store({ db }) {
   function createField(
     {
       name,
+      _id,
       projects,
       forceSources
-    }: { name: string; projects: ThingDict; forceSources: ThingDict },
+    }: {
+      name: string;
+      _id: string;
+      projects: ThingDict;
+      forceSources: ThingDict;
+    },
     done: FieldStoreDone
   ) {
     var field = {
-      _id: new Date().toJSON(),
+      _id,
       name,
-      id: `field-${randomId(4)}`,
       projects: projects || {},
       forceSources: forceSources || {}
     };
@@ -67,14 +70,12 @@ export function Store({ db }) {
     done(null, result.rows.map(getNameAndId));
   }
 
-  function getNameAndId({ id, name }) {
-    return { id, name };
+  function getNameAndId({ doc }) {
+    return { _id: doc._id, name: doc.name };
   }
 
   function FieldStore(doc) {
-    const _id: string = doc._id;
-    const id: string = doc.id;
-
+    debugger;
     var dictsForTypes: Record<string, ThingDict> = {
       project: {},
       forceSource: {}
@@ -104,7 +105,7 @@ export function Store({ db }) {
     };
 
     function getFieldId() {
-      return id;
+      return doc._id;
     }
 
     function update(
@@ -127,7 +128,8 @@ export function Store({ db }) {
 
     function saveAll(done: Done) {
       var field = {
-        _id,
+        _id: doc._id,
+        _rev: doc._rev,
         projects: dictsForTypes['project'],
         forceSource: dictsForTypes['forceSource']
       };

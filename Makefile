@@ -24,9 +24,11 @@ prettier:
 	prettier --single-quote --write "**/*.html"
 
 test:
+	rm -rf tests/fixtures/*
 	node -r ts-node/register tests/initial-field-flow-tests.js
 
 debug-test:
+	rm -rf tests/fixtures/*
 	node inspect -r ts-node/register tests/initial-field-flow-tests.js
 
 sync:

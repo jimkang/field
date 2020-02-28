@@ -11,6 +11,7 @@ export function createNewField(
   store.createField(
     {
       name: createFieldName(),
+      _id: createFieldId(),
       forceSources,
       projects
     },
@@ -24,4 +25,8 @@ export function createNewField(
 
 function createFieldName() {
   return `A cool new field of stuff ${randomId(4)}`;
+}
+
+function createFieldId() {
+  return `field-${randomId(4)}`;
 }

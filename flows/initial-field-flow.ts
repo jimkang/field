@@ -1,8 +1,6 @@
 import { Store } from '../store';
 import { createNewField } from '../tasks/create-new-field';
 import { FieldStoreDone } from '../types';
-var oknok = require('oknok');
-var VError = require('verror');
 
 function initialFieldFlow(
   { db, fieldId }: { db: object; fieldId: string },
@@ -10,43 +8,49 @@ function initialFieldFlow(
 ) {
   var store = Store({ db });
 
-  if (fieldId) {
-    loadField(fieldId);
-  } else {
-    store.getFieldNames(
-      oknok({
-        ok: loadOrCreateField,
-        nok: error =>
-          done(VError(error, 'Could not get field names. Try reloading?'))
-      })
-    );
-  }
+  store.getFieldNames(onFieldNamesGet);
 
-  function loadOrCreateField(
-    fieldIdNamesAndIds: Array<Record<string, string>>
+  function onFieldNamesGet(
+    error: Error,
+    fieldNamesAndIds: Array<Record<string, string>>
   ) {
-    if (fieldIdNamesAndIds.length > 0) {
-      loadField(fieldIdNamesAndIds[0].id);
+    if (error) {
+      loadOrCreateField([]);
     } else {
-      createNewField({ store, forceSources: {}, projects: {} }, done);
+      loadOrCreateField(fieldNamesAndIds);
     }
   }
 
-  function loadField(fieldId: string) {
-    store.loadField(
-      { field: fieldId },
-      oknok({
-        ok: result => done(null, result),
-        nok: error =>
-          done(
-            VError(
-              error,
-              'Could not load the fieldId named %s. Try reloading?',
-              fieldId
-            )
-          )
-      })
-    );
+  function loadOrCreateField(fieldNamesAndIds: Array<Record<string, string>>) {
+    // If there's field ids, this is an initialized
+    // database, and we should try to load the specified
+    // field. If not, we should create one.
+    if (fieldNamesAndIds.length > 0) {
+      store.loadField({ fieldId }, onFieldLoad);
+    } else {
+      createNewField(
+        { store, forceSources: {}, projects: {} },
+        completeIgnoringError
+      );
+    }
+  }
+
+  function onFieldLoad(error: Error, result) {
+    if (error) {
+      done(null, {
+        store,
+        message: `Could not load the field with the id ${fieldId}. Try picking another field?`
+      });
+    } else {
+      done(null, result);
+    }
+  }
+
+  function completeIgnoringError(error, result) {
+    if (error) {
+      console.error(error, error.stack);
+    }
+    done(null, result);
   }
 }
 
