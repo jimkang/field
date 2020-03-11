@@ -75,7 +75,6 @@ export function Store({ db }) {
   }
 
   function FieldStore(doc) {
-    debugger;
     var dictsForTypes: Record<string, ThingDict> = {
       project: {},
       forceSource: {}
@@ -192,7 +191,6 @@ export function Store({ db }) {
           } else if (value instanceof Date) {
             target[key] = new Date(value);
           } else if (typeof value === 'object') {
-            // TODO.
             throw new Error('Copying objects not implemented.');
           } else {
             target[key] = value;

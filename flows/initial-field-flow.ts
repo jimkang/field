@@ -26,7 +26,12 @@ function initialFieldFlow(
     // database, and we should try to load the specified
     // field. If not, we should create one.
     if (fieldNamesAndIds.length > 0) {
-      store.loadField({ fieldId }, onFieldLoad);
+      if (fieldId) {
+        store.loadField({ fieldId }, onFieldLoad);
+      } else {
+        // TODO: Look at ordering of fieldNamesAndIds.
+        store.loadField({ fieldId: fieldNamesAndIds[0]._id }, onFieldLoad);
+      }
     } else {
       createNewField(
         { store, forceSources: {}, projects: {} },

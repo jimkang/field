@@ -6,9 +6,8 @@ var initialFieldFlow = require('../flows/initial-field-flow.ts');
 var PouchDB = require('pouchdb');
 
 var testCases = [
-  // TODO: No fieldId provided at all
   {
-    name: 'Nothing in db yet',
+    name: 'Nothing in db yet, so it initializes with a field',
     dbName: 'db-a',
     expectError: false,
     expectStore: true,
@@ -16,6 +15,15 @@ var testCases = [
     opts: {
       fieldId: 'smidgeo-field'
     }
+  },
+  {
+    name:
+      'No fieldId provided, so it returns a store, and a recent field',
+    dbName: 'db-a',
+    expectError: false,
+    expectStore: true,
+    expectFieldStore: true,
+    opts: {}
   },
   {
     name: 'Field is in db but not the one with the requested id',
