@@ -12,6 +12,10 @@ One possible use of this app is to make a map of your projects, rearrangeable by
 
 In the worst case, it'll be a bunch of your project names in shapes, arranged in 2D, so that at least it won't be this oppressively long list.
 
+## TODO
+
+- Test import and export
+
 Installation
 ------------
 

@@ -8,6 +8,7 @@ import {
 } from '../types';
 import { renderEditor } from '../dom/render-editor';
 import { renderMap } from '../dom/render-map';
+// TODO: Update projectsFlow to not assume a singleton store
 var { update, deleteThing } = require('../store');
 var curry = require('lodash.curry');
 var randomId = require('@jimkang/randomid')();
