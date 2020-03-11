@@ -17,8 +17,7 @@ var testCases = [
     }
   },
   {
-    name:
-      'No fieldId provided, so it returns a store, and a recent field',
+    name: 'No fieldId provided, so it returns a store, and a recent field',
     dbName: 'db-a',
     expectError: false,
     expectStore: true,
@@ -36,8 +35,18 @@ var testCases = [
     opts: {
       fieldId: 'nonexistent-field'
     }
+  },
+  {
+    name: 'Field is in db',
+    dbName: 'db-a',
+    expectError: false,
+    expectStore: true,
+    expectFieldStore: false,
+    expectedFieldStoreId: 'smidgeo-field',
+    opts: {
+      fieldId: 'smidgeo-field'
+    }
   }
-  // TODO: fieldId is in db
 ];
 
 testCases.forEach(runCase);
@@ -69,6 +78,13 @@ function runCase(testCase) {
           'function',
           'fieldStore is provided by flow.'
         );
+        if (testCase.expectedFieldStoreFieldId) {
+          t.equal(
+            result.fieldStore.getFieldId(),
+            result.fieldStoreFieldId,
+            'Id of field is correct.'
+          );
+        }
       }
       if (testCase.expectedMessage) {
         t.equal(
